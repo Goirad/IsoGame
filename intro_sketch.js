@@ -92,6 +92,7 @@ let gameSketch = function(sketch) {
         graph2 = new staticGraph(graph1);
         graph2.y = sketch.height/4;
         moves = 0;
+        continueButton.color = '#4e4c';
     };
 
     sketch.mouseReleased = function() {
@@ -106,6 +107,8 @@ let gameSketch = function(sketch) {
         isIso = graph1.isoTo(graph2);
         if (isIso && screen === "play") {
             screen = "won";
+            graph1.won = true;
+            graph2.won = true;
             continueButton.color = '#4e4c';
         }
     };

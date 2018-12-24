@@ -9,6 +9,7 @@ class Graph {
         for (let i = 0; i < numVerts; i++) {
             this.perm.push(i);
         }
+        this.won = false;
     }
 
     clone() {
@@ -93,15 +94,19 @@ class Graph {
         for (let i = 0; i < this.numVerts - 1; i++) {
             for (let j = i + 1; j < this.numVerts; j++) {
                 if (this.getEdge(this.perm[i], this.perm[j]) === "1") {
-                    if(i != this.selected && j != this.selected) {
-                        context.stroke(0, 50);
-                        context.strokeWeight(4);
-                        context.line(vertices[i][0], vertices[i][1], vertices[j][0], vertices[j][1]);
+                    context.strokeWeight(4);
+                    if(!this.won) {
+                        if(i != this.selected && j != this.selected) {
+                            context.stroke('#4444');
+                        }else{
+                            context.stroke('#cc3e');
+                        }
                     }else{
-                        context.strokeWeight(4);
-                        context.stroke('#cc3e');
-                        context.line(vertices[i][0], vertices[i][1], vertices[j][0], vertices[j][1]);
+                        context.strokeWeight(6);
+                        context.stroke('#dddc')
                     }
+                    context.line(vertices[i][0], vertices[i][1], vertices[j][0], vertices[j][1]);
+
 
                 }
             }
@@ -156,13 +161,18 @@ class staticGraph extends Graph {
         for (let i = 0; i < this.numVerts - 1; i++) {
             for (let j = i + 1; j < this.numVerts; j++) {
                 if (this.getEdge(this.perm[i], this.perm[j]) === "1") {
-                    if(this.other.getEdge(this.other.perm[i], this.other.perm[j]) === "1") {
-                        context.strokeWeight(4);
-                        context.stroke('#393c');
+                    context.strokeWeight(4);
+                    if(!this.won) {
+                        if(this.other.getEdge(this.other.perm[i], this.other.perm[j]) === "1") {
+                            context.stroke('#3d3c');
+                        }else{
+                            context.stroke('#d33c');
+                        }
                     }else{
-                        context.stroke('#933c');
-                        context.strokeWeight(4);
+                        context.strokeWeight(6);
+                        context.stroke('#dddc');
                     }
+
                     context.line(vertices[i][0], vertices[i][1], vertices[j][0], vertices[j][1]);
                 }
             }
