@@ -10,20 +10,18 @@ let gameSketch = function(sketch) {
     let lessButton;
     let moreButton;
     let quitButton;
-    let continueButton;
+    let resetButton;
 
     sketch.setup = function() {
         sketch.createCanvas(540, 960);
         graph1 = new Graph(sketch.width/2, 2.5*sketch.height/4, numVerts);
         graph2 = new staticGraph(graph1);
         graph2.y = sketch.height/4;
-        lessButton = new Button(sketch, 'LESS', sketch.width/2 - 120, sketch.height/2 + 30, 60, 40);
-        sameButton = new Button(sketch, 'SAME', sketch.width/2, sketch.height/2 + 30, 60, 40);
-        moreButton = new Button(sketch, 'MORE', sketch.width/2 + 120, sketch.height/2 + 30, 60, 40);
-        quitButton = new Button(sketch, 'QUIT', sketch.width/2 + 120, 860, 60, 40);
-        continueButton = new Button(sketch, 'CONT', sketch.width/2 - 120, 860, 60, 40);
-        continueButton.color = '#e44c';
-
+        lessButton = new Button(sketch, 'LESS', sketch.width/2 - 120, 865, 60, 40);
+        sameButton = new Button(sketch, 'SAME', sketch.width/2, 865, 60, 40);
+        moreButton = new Button(sketch, 'MORE', sketch.width/2 + 120, 865, 60, 40);
+        quitButton = new Button(sketch, 'QUIT', sketch.width/2 + 120, 815, 60, 40);
+        resetButton = new Button(sketch, 'RSET', sketch.width/2 - 120, 815, 60, 40);
     };
 
     sketch.draw = function() {
@@ -32,25 +30,29 @@ let gameSketch = function(sketch) {
         graph2.draw(sketch);
         sketch.textAlign(sketch.CENTER, sketch.CENTER);
         sketch.textSize(40);
-        sketch.stroke('#444e');
-        sketch.fill('#444e');
-        sketch.text('GOAL', sketch.width/2, 45);
+
         quitButton.draw();
-        continueButton.draw();
+
+        resetButton.draw();
         sketch.text(moves, sketch.width/2, 815);
-        if(screen === "win") {
-            sketch.rectMode(sketch.CENTER);
+        if(screen === "won") {
+            sketch.rectMode(sketch.CENTER, sketch.CENTER);
             sketch.fill('#9b9e');
             sketch.stroke('#444e');
             sketch.strokeWeight(2);
-            sketch.rect(sketch.width/2, sketch.height/2, sketch.width - 100, sketch.height/6, 10);
+            sketch.rect(sketch.width/2, 40, sketch.width - 100, 50, 10);
 
+            sketch.stroke('#444e');
             sketch.fill('#444e');
-            sketch.text('Good Job!', sketch.width/2, sketch.height/2 - 30);
+            sketch.text('Good Job!', sketch.width/2, 40);
 
             lessButton.draw();
             sameButton.draw();
             moreButton.draw();
+        }else{
+            sketch.stroke('#444e');
+            sketch.fill('#444e');
+            sketch.text('GOAL', sketch.width/2, 45);
         }
 
     };
@@ -63,15 +65,22 @@ let gameSketch = function(sketch) {
                 numVerts = 4;
                 sketch.reset();
             }
+            if(resetButton.clickedOn()) {
+                graph1.perm = graph1.originalPerm.slice();
+                moves = 0;
+            }
             let v = graph1.isVertex(sketch.mouseX, sketch.mouseY);
             if (v != null) {
                 graph1.selected = v;
             }
         }else if(screen === "won") {
-            if(continueButton.clickedOn()) {
-                screen = "win";
+            if(resetButton.clickedOn()) {
+                graph1.perm = graph1.originalPerm.slice();
+                moves = 0;
+                screen = "play";
+                graph1.won = false;
+                graph2.won = false;
             }
-        } else if(screen === "win"){
             if(sameButton.clickedOn()) {
                 sketch.reset();
             }
@@ -109,7 +118,6 @@ let gameSketch = function(sketch) {
             screen = "won";
             graph1.won = true;
             graph2.won = true;
-            continueButton.color = '#4e4c';
         }
     };
 };

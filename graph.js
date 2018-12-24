@@ -10,6 +10,7 @@ class Graph {
             this.perm.push(i);
         }
         this.won = false;
+        this.originalPerm = this.perm.slice();
     }
 
     clone() {
@@ -46,7 +47,7 @@ class Graph {
         for (let i = 0; i < this.numVerts; i++) {
             let deltax = x - (this.x + Math.cos(2 * i * Math.PI / this.numVerts) * 150);
             let deltay = y - (this.y + Math.sin(2 * i * Math.PI / this.numVerts) * 150);
-            if (Math.sqrt(deltax * deltax + deltay * deltay) < 50) {
+            if (Math.sqrt(deltax * deltax + deltay * deltay) < 40) {
                 return i;
             }
         }
@@ -71,11 +72,14 @@ class Graph {
         context.fill(150);
         context.noStroke();
         //placeholders to know where to drag to
-        for (let i = 0; i < this.numVerts; i++) {
-            let x = radius * Math.cos(2 * i * Math.PI / this.numVerts);
-            let y = radius * Math.sin(2 * i * Math.PI / this.numVerts);
-            context.ellipse(x, y, 50);
+        if(!this.won) {
+            for (let i = 0; i < this.numVerts; i++) {
+                let x = radius * Math.cos(2 * i * Math.PI / this.numVerts);
+                let y = radius * Math.sin(2 * i * Math.PI / this.numVerts);
+                context.ellipse(x, y, 40);
+            }
         }
+
 
         //vertices
         for (let i = 0; i < this.numVerts; i++) {
@@ -103,7 +107,7 @@ class Graph {
                         }
                     }else{
                         context.strokeWeight(6);
-                        context.stroke('#dddc')
+                        context.stroke('#11fe')
                     }
                     context.line(vertices[i][0], vertices[i][1], vertices[j][0], vertices[j][1]);
 
@@ -170,7 +174,7 @@ class staticGraph extends Graph {
                         }
                     }else{
                         context.strokeWeight(6);
-                        context.stroke('#dddc');
+                        context.stroke('#11fe');
                     }
 
                     context.line(vertices[i][0], vertices[i][1], vertices[j][0], vertices[j][1]);
