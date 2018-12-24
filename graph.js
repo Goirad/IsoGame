@@ -45,7 +45,7 @@ class Graph {
         for (let i = 0; i < this.numVerts; i++) {
             let deltax = x - (this.x + Math.cos(2 * i * Math.PI / this.numVerts) * 150);
             let deltay = y - (this.y + Math.sin(2 * i * Math.PI / this.numVerts) * 150);
-            if (Math.sqrt(deltax * deltax + deltay * deltay) < 20) {
+            if (Math.sqrt(deltax * deltax + deltay * deltay) < 50) {
                 return i;
             }
         }
@@ -73,7 +73,7 @@ class Graph {
         for (let i = 0; i < this.numVerts; i++) {
             let x = radius * Math.cos(2 * i * Math.PI / this.numVerts);
             let y = radius * Math.sin(2 * i * Math.PI / this.numVerts);
-            context.ellipse(x, y, 30);
+            context.ellipse(x, y, 50);
         }
 
         //vertices
@@ -99,7 +99,7 @@ class Graph {
                         context.line(vertices[i][0], vertices[i][1], vertices[j][0], vertices[j][1]);
                     }else{
                         context.strokeWeight(4);
-                        context.stroke('#ee2c');
+                        context.stroke('#cc3e');
                         context.line(vertices[i][0], vertices[i][1], vertices[j][0], vertices[j][1]);
                     }
 
@@ -111,7 +111,7 @@ class Graph {
         context.stroke(0);
         context.strokeWeight(1);
         for (let v in vertices) {
-            context.ellipse(vertices[v][0], vertices[v][1], 10);
+            context.ellipse(vertices[v][0], vertices[v][1], 15);
         }
         context.pop();
     }
@@ -158,9 +158,9 @@ class staticGraph extends Graph {
                 if (this.getEdge(this.perm[i], this.perm[j]) === "1") {
                     if(this.other.getEdge(this.other.perm[i], this.other.perm[j]) === "1") {
                         context.strokeWeight(4);
-                        context.stroke('#3e38');
+                        context.stroke('#393c');
                     }else{
-                        context.stroke('#e338');
+                        context.stroke('#933c');
                         context.strokeWeight(4);
                     }
                     context.line(vertices[i][0], vertices[i][1], vertices[j][0], vertices[j][1]);
@@ -172,7 +172,7 @@ class staticGraph extends Graph {
         context.stroke(0);
         context.strokeWeight(1);
         for (let v in vertices) {
-            context.ellipse(vertices[v][0], vertices[v][1], 10);
+            context.ellipse(vertices[v][0], vertices[v][1], 15);
         }
         context.pop();
     }

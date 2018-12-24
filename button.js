@@ -7,7 +7,7 @@ class Button {
         context.textSize(30);
         this.w = context.textWidth(text) + 16;
         this.h = h;
-
+        this.color = '#eeee';
     }
 
     draw() {
@@ -17,7 +17,7 @@ class Button {
         this.context.translate(this.x, this.y);
         this.context.stroke('#444e');
         this.context.strokeWeight(2);
-        this.context.fill('#eeee');
+        this.context.fill(this.color);
         this.context.rect(0, 0, this.w, this.h, 10);
         this.context.textSize(30);
         this.context.textAlign(this.context.CENTER, this.context.CENTER);
