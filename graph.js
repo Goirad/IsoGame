@@ -168,7 +168,7 @@ class staticGraph extends Graph {
                     context.strokeWeight(4);
                     if(!this.won) {
                         if(this.other.getEdge(this.other.perm[i], this.other.perm[j]) === "1") {
-                            context.stroke('#3d7c');
+                            context.stroke('#37dc');
                         }else{
                             context.stroke('#d33c');
                         }

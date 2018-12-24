@@ -24,11 +24,11 @@ let gameSketch = function(sketch) {
         menuButton = new Button(sketch, 'MENU', sketch.width/2 + 120, 815, 100, 40);
         resetButton = new Button(sketch, 'RSET', sketch.width/2 - 120, 815,100, 40);
         lvlButtons = [];
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 5; i++) {
             let row = [];
-            for (let j = 0; j < 5; j++) {
+            for (let j = 0; j < 4; j++) {
                 let n = 4 * i + j + 3;
-                let b = new Button(sketch, '' + n, 50 + 32 + 35 + i * 102, 200 + j * 100, 70, 70);
+                let b = new Button(sketch, '' + n, 50 + 32 + 35 + j * 102, 200 + i * 100, 70, 70);
                 row.push(b);
             }
             lvlButtons.push(row);
@@ -99,6 +99,9 @@ let gameSketch = function(sketch) {
                 graph1.selected = v;
             }
         }else if(screen === "won") {
+            if(menuButton.clickedOn()) {
+                screen = "menu";
+            }
             if(resetButton.clickedOn()) {
                 graph1.perm = graph1.originalPerm.slice();
                 moves = 0;
