@@ -87,18 +87,18 @@ let gameSketch = function(sketch) {
 
     sketch.mousePressed = function() {
         if (screen === "play") {
-            if(menuButton.clickedOn()) {
+            /*if(menuButton.clickedOn()) {
                 screen = "menu";
             }
             if(resetButton.clickedOn()) {
                 graph1.perm = graph1.originalPerm.slice();
                 moves = 0;
-            }
+            }*/
             let v = graph1.isVertex(sketch.mouseX, sketch.mouseY);
             if (v != null) {
                 graph1.selected = v;
             }
-        }else if(screen === "won") {
+        }/*else if(screen === "won") {
             if(menuButton.clickedOn()) {
                 screen = "menu";
             }
@@ -129,7 +129,7 @@ let gameSketch = function(sketch) {
                     }
                 }
             }
-        }
+        }*/
     };
 
     sketch.reset = function() {
@@ -154,6 +154,49 @@ let gameSketch = function(sketch) {
             screen = "won";
             graph1.won = true;
             graph2.won = true;
+        }
+
+        if (screen === "play") {
+            if(menuButton.clickedOn()) {
+                screen = "menu";
+            }
+            if(resetButton.clickedOn()) {
+                graph1.perm = graph1.originalPerm.slice();
+                moves = 0;
+            }
+        }else if(screen === "won") {
+            if(menuButton.clickedOn()) {
+                screen = "menu";
+            }
+            if(resetButton.clickedOn()) {
+                graph1.perm = graph1.originalPerm.slice();
+                moves = 0;
+                screen = "play";
+                graph1.won = false;
+                graph2.won = false;
+            }
+            if(sameButton.clickedOn()) {
+                sketch.reset();
+            }
+            if(lessButton.clickedOn()) {
+                numVerts -= 1;
+                sketch.reset();
+            }
+            if(moreButton.clickedOn()) {
+                console.log("before " + numVerts);
+                numVerts += 1;
+                console.log("after " + numVerts);
+                sketch.reset();
+            }
+        }else if(screen === "menu") {
+            for (let row of lvlButtons) {
+                for (let b of row) {
+                    if(b.clickedOn()) {
+                        numVerts = parseInt(b.text);
+                        sketch.reset();
+                    }
+                }
+            }
         }
     };
 };

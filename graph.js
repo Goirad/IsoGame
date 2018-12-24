@@ -3,7 +3,7 @@ class Graph {
         this.x = x;
         this.y = y;
         this.numVerts = numVerts;
-        this.graph = Graph.randGraph(numVerts);
+        this.graph = Graph.randGraph2(numVerts);
         this.selected = null;
         this.perm = [];
         for (let i = 0; i < numVerts; i++) {
@@ -13,11 +13,20 @@ class Graph {
         this.originalPerm = this.perm.slice();
     }
 
-    clone() {
-        let g = new Graph(this.x, this.y, this.numVerts);
-        g.graph = this.graph;
-        shuffle(g.perm);
-        return g;
+    static randGraph2(numVerts) {
+        let out = "";
+        let temp = [];
+        let edges = numVerts * (numVerts - 1) / 2;
+        let t = numVerts;
+        for (let i = 0; i < edges; i++) {
+            if (i < t) {
+                temp.push("1");
+            } else {
+                temp.push("2");
+            }
+        }
+        shuffle(temp);
+        return temp.join("");
     }
     static randGraph(numVerts) {
         let out = "";
@@ -47,7 +56,7 @@ class Graph {
         for (let i = 0; i < this.numVerts; i++) {
             let deltax = x - (this.x + Math.cos(2 * i * Math.PI / this.numVerts) * 150);
             let deltay = y - (this.y + Math.sin(2 * i * Math.PI / this.numVerts) * 150);
-            if (Math.sqrt(deltax * deltax + deltay * deltay) < 40) {
+            if (Math.sqrt(deltax * deltax + deltay * deltay) < 20) {
                 return i;
             }
         }
