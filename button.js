@@ -4,8 +4,9 @@ class Button {
         this.text = text;
         this.x = x;
         this.y = y;
-        context.textSize(30);
-        this.w = context.textWidth(text) + 16;
+        //context.textSize(30);
+        //this.w = context.textWidth(text) + 16;
+        this.w = w;
         this.h = h;
         this.color = '#eeee';
     }
