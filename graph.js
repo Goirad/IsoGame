@@ -122,9 +122,12 @@ class staticGraph extends Graph {
         super(other.x, other.y, other.numVerts);
         this.graph = other.graph;
         this.other = other;
-        while(arraysEqual(this.perm, other.perm)) {
+        let i = 0;
+        while(i < 10 && this.isoTo(other)) {
             shuffle(this.perm);
+            i ++;
         }
+        //console.log("shuffled " + i);
     }
 
     draw(context) {

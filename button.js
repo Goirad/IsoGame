@@ -21,6 +21,7 @@ class Button {
         this.context.rect(0, 0, this.w, this.h, 10);
         this.context.textSize(30);
         this.context.textAlign(this.context.CENTER, this.context.CENTER);
+        this.context.fill('#444e');
         this.context.text(this.text, 0, 0);
 
         this.context.pop();

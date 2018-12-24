@@ -9,6 +9,7 @@ let gameSketch = function(sketch) {
     let sameButton;
     let lessButton;
     let moreButton;
+    let quitButton;
 
     sketch.setup = function() {
         sketch.createCanvas(540, 960);
@@ -18,7 +19,7 @@ let gameSketch = function(sketch) {
         lessButton = new Button(sketch, 'LESS', sketch.width/2 - 120, 820, 60, 40);
         sameButton = new Button(sketch, 'SAME', sketch.width/2, 820, 60, 40);
         moreButton = new Button(sketch, 'MORE', sketch.width/2 + 120, 820, 60, 40);
-
+        quitButton = new Button(sketch, 'QUIT', sketch.width/2, 860, 60, 40);
     };
 
     sketch.draw = function() {
@@ -30,7 +31,7 @@ let gameSketch = function(sketch) {
         sketch.stroke('#444e');
         sketch.fill('#444e');
         sketch.text('GOAL', sketch.width/2, 45);
-
+        quitButton.draw();
         sketch.text(moves, sketch.width/2, 820);
         if(screen === "win") {
             sketch.rectMode(sketch.CENTER);
@@ -38,15 +39,25 @@ let gameSketch = function(sketch) {
             sketch.stroke('#444e');
             sketch.strokeWeight(2);
             sketch.rect(sketch.width/2, sketch.height/2, sketch.width - 100, sketch.height - 100, 10);
+
+            sketch.fill('#444e');
+            sketch.text('Good Job!', sketch.width/2, sketch.height/2);
+
             lessButton.draw();
             sameButton.draw();
             moreButton.draw();
         }
+
     };
 
 
     sketch.mousePressed = function() {
         if (screen === "play") {
+            if(quitButton.clickedOn()) {
+                screen = "lose";
+                numVerts = 4;
+                sketch.reset();
+            }
             let v = graph1.isVertex(sketch.mouseX, sketch.mouseY);
             if (v != null) {
                 graph1.selected = v;
