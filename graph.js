@@ -11,6 +11,19 @@ class Graph {
         }
         this.won = false;
         this.originalPerm = this.perm.slice();
+
+
+        this.dropRadius = this.getDropRadius();
+
+        this.radius = (350 - 10)/(2*(1 + this.dropRadius));
+
+    }
+
+    getDropRadius() {
+        let dx =  1 - Math.cos(2 * 1 * Math.PI / this.numVerts);
+        let dy =  0 - Math.sin(2 * 1 * Math.PI / this.numVerts);
+        let dist = Math.sqrt(dx*dx + dy*dy);
+        return dist/2;
     }
 
     static randGraph2(numVerts) {
@@ -54,9 +67,9 @@ class Graph {
 
     isVertex(x, y) {
         for (let i = 0; i < this.numVerts; i++) {
-            let deltax = x - (this.x + Math.cos(2 * i * Math.PI / this.numVerts) * 150);
-            let deltay = y - (this.y + Math.sin(2 * i * Math.PI / this.numVerts) * 150);
-            if (Math.sqrt(deltax * deltax + deltay * deltay) < 20) {
+            let deltax = x - (this.x + Math.cos(2 * i * Math.PI / this.numVerts) * this.radius);
+            let deltay = y - (this.y + Math.sin(2 * i * Math.PI / this.numVerts) * this.radius);
+            if (Math.sqrt(deltax * deltax + deltay * deltay) < this.dropRadius*this.radius) {
                 return i;
             }
         }
@@ -75,17 +88,17 @@ class Graph {
         context.stroke(20);
         context.fill(190);
         context.rect(0, 0, 350, 350, 20);
-        let radius = 150;
+
         let vertices = [];
 
-        context.fill(150);
+        context.fill('#aaaa');
         context.noStroke();
         //placeholders to know where to drag to
         if(!this.won) {
             for (let i = 0; i < this.numVerts; i++) {
-                let x = radius * Math.cos(2 * i * Math.PI / this.numVerts);
-                let y = radius * Math.sin(2 * i * Math.PI / this.numVerts);
-                context.ellipse(x, y, 40);
+                let x = this.radius * Math.cos(2 * i * Math.PI / this.numVerts);
+                let y = this.radius * Math.sin(2 * i * Math.PI / this.numVerts);
+                context.ellipse(x, y, 2*this.dropRadius*this.radius - 4);
             }
         }
 
@@ -94,8 +107,8 @@ class Graph {
         for (let i = 0; i < this.numVerts; i++) {
             if(i != this.selected) {
                 vertices.push([
-                    radius * Math.cos(2 * i * Math.PI / this.numVerts),
-                    radius * Math.sin(2 * i * Math.PI / this.numVerts)
+                    this.radius * Math.cos(2 * i * Math.PI / this.numVerts),
+                    this.radius * Math.sin(2 * i * Math.PI / this.numVerts)
                 ]);
             }else{
                 vertices.push([context.mouseX - this.x, context.mouseY - this.y]);

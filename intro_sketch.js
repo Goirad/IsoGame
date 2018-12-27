@@ -12,17 +12,27 @@ let gameSketch = function(sketch) {
     let menuButton;
     let resetButton;
     let lvlButtons;
+    let menuCloseButton;
+    let undoButton, redoButton;
+    let pastMoves = [];
+    let currentMove = 0;
 
     sketch.setup = function() {
-        sketch.createCanvas(540, 960);
-        graph1 = new Graph(sketch.width/2, 2.5*sketch.height/4, numVerts);
+        sketch.createCanvas(sketch.windowWidth, sketch.windowHeight);
+        graph1 = new Graph(sketch.width/2, 2.5*sketch.height/4 - 10, numVerts);
         graph2 = new staticGraph(graph1);
-        graph2.y = sketch.height/4;
-        lessButton = new Button(sketch, 'LESS', sketch.width/2 - 120, 865, 100, 40);
-        sameButton = new Button(sketch, 'SAME', sketch.width/2, 865, 100, 40);
-        moreButton = new Button(sketch, 'MORE', sketch.width/2 + 120, 865, 100, 40);
-        menuButton = new Button(sketch, 'MENU', sketch.width/2 + 120, 815, 100, 40);
-        resetButton = new Button(sketch, 'RSET', sketch.width/2 - 120, 815,100, 40);
+        graph2.y = sketch.height/4 - 10;
+        lessButton      = new Button(sketch, 'LESS', sketch.width/2 - 120   , 845, 100, 40);
+        sameButton      = new Button(sketch, 'SAME', sketch.width/2         , 845, 100, 40);
+        moreButton      = new Button(sketch, 'MORE', sketch.width/2 + 120   , 845, 100, 40);
+        menuButton      = new Button(sketch, 'MENU', sketch.width/2 + 120   , 795, 100, 40);
+        resetButton     = new Button(sketch, 'RSET', sketch.width/2 - 120   , 795, 100, 40);
+        menuCloseButton = new Button(sketch, 'X'   , sketch.width - 70      ,  70,  50, 50);
+        undoButton      = new Button(sketch, 'UNDO', sketch.width/2 - 120   , 895, 100, 40);
+        undoButton.color = '#e33e';
+        redoButton      = new Button(sketch, 'REDO', sketch.width/2 + 120   , 895, 100, 40);
+        redoButton.color = '#e33e';
+
         lvlButtons = [];
         for (let i = 0; i < 5; i++) {
             let row = [];
@@ -45,7 +55,10 @@ let gameSketch = function(sketch) {
         menuButton.draw();
 
         resetButton.draw();
-        sketch.text(moves, sketch.width/2, 815);
+        sketch.text(moves, sketch.width/2, 795);
+
+        undoButton.draw();
+        redoButton.draw();
         if(screen === "won") {
             sketch.rectMode(sketch.CENTER, sketch.CENTER);
             sketch.fill('#9b9e');
@@ -63,14 +76,14 @@ let gameSketch = function(sketch) {
         }else if(screen ==="play"){
             sketch.stroke('#444e');
             sketch.fill('#444e');
-            sketch.text('GOAL', sketch.width/2, 45);
+            sketch.text('GOAL', sketch.width/2, 35);
         }else if(screen === "menu") {
             sketch.rectMode(sketch.CENTER, sketch.CENTER);
             sketch.fill('#b99e');
             sketch.stroke('#444e');
             sketch.strokeWeight(2);
             sketch.rect(sketch.width/2, sketch.height/2, sketch.width - 100, sketch.height-100, 10);
-
+            menuCloseButton.draw();
             sketch.stroke('#444e');
             sketch.fill('#444e');
             sketch.text('MENU', sketch.width/2, 100);
@@ -87,74 +100,39 @@ let gameSketch = function(sketch) {
 
     sketch.mousePressed = function() {
         if (screen === "play") {
-            /*if(menuButton.clickedOn()) {
-                screen = "menu";
-            }
-            if(resetButton.clickedOn()) {
-                graph1.perm = graph1.originalPerm.slice();
-                moves = 0;
-            }*/
             let v = graph1.isVertex(sketch.mouseX, sketch.mouseY);
             if (v != null) {
                 graph1.selected = v;
             }
-        }/*else if(screen === "won") {
-            if(menuButton.clickedOn()) {
-                screen = "menu";
-            }
-            if(resetButton.clickedOn()) {
-                graph1.perm = graph1.originalPerm.slice();
-                moves = 0;
-                screen = "play";
-                graph1.won = false;
-                graph2.won = false;
-            }
-            if(sameButton.clickedOn()) {
-                sketch.reset();
-            }
-            if(lessButton.clickedOn()) {
-                numVerts -= 1;
-                sketch.reset();
-            }
-            if(moreButton.clickedOn()) {
-                numVerts += 1;
-                sketch.reset();
-            }
-        }else if(screen === "menu") {
-            for (let row of lvlButtons) {
-                for (let b of row) {
-                    if(b.clickedOn()) {
-                        numVerts = b.text;
-                        sketch.reset();
-                    }
-                }
-            }
-        }*/
+        }
     };
 
     sketch.reset = function() {
         screen = "play";
-        graph1 = new Graph(sketch.width/2, 2.5*sketch.height/4, numVerts);
+        graph1 = new Graph(sketch.width/2, 2.5*sketch.height/4 - 10, numVerts);
         graph2 = new staticGraph(graph1);
-        graph2.y = sketch.height/4;
+        graph2.y = sketch.height/4 - 10;
         moves = 0;
+        currentMove = 0;
+        pastMoves = [];
     };
 
     sketch.mouseReleased = function() {
         let v = graph1.isVertex(sketch.mouseX, sketch.mouseY);
         if (v != null && v != graph1.selected && graph1.selected != null) {
-            let t = graph1.perm[v];
-            graph1.perm[v] = graph1.perm[graph1.selected];
-            graph1.perm[graph1.selected] = t;
+            arraySwap(graph1.perm, v, graph1.selected);
+            if (currentMove > 0) {
+                let newLength = pastMoves.length - currentMove;
+                //console.log("slicing at " + currentMove);
+                //console.log("slicing from 0 to " + newLength);
+                pastMoves = pastMoves.slice(0, pastMoves.length - currentMove);
+                currentMove = 0;
+            }
+            pastMoves.push([v, graph1.selected]);
+            console.log(pastMoves);
             moves += 1;
         }
-        graph1.selected = null;
-        isIso = graph1.isoTo(graph2);
-        if (isIso && screen === "play") {
-            screen = "won";
-            graph1.won = true;
-            graph2.won = true;
-        }
+
 
         if (screen === "play") {
             if(menuButton.clickedOn()) {
@@ -163,6 +141,21 @@ let gameSketch = function(sketch) {
             if(resetButton.clickedOn()) {
                 graph1.perm = graph1.originalPerm.slice();
                 moves = 0;
+                pastMoves = [];
+            }
+            if(undoButton.clickedOn()) {
+                if (currentMove < pastMoves.length) {
+                    arraySwap(graph1.perm, pastMoves[pastMoves.length - 1 - currentMove][0], pastMoves[pastMoves.length - 1 - currentMove][1]);
+                    moves -= 1;
+                    currentMove += 1;
+                }
+            }
+            if (redoButton.clickedOn()) {
+                if (currentMove > 0) {
+                    arraySwap(graph1.perm, pastMoves[pastMoves.length - currentMove][0], pastMoves[pastMoves.length - currentMove][1]);
+                    currentMove -= 1;
+                    moves += 1;
+                }
             }
         }else if(screen === "won") {
             if(menuButton.clickedOn()) {
@@ -188,6 +181,24 @@ let gameSketch = function(sketch) {
                 console.log("after " + numVerts);
                 sketch.reset();
             }
+
+            if(undoButton.clickedOn()) {
+                if (currentMove < pastMoves.length) {
+                    arraySwap(graph1.perm, pastMoves[pastMoves.length - 1 - currentMove][0], pastMoves[pastMoves.length - 1 - currentMove][1]);
+                    moves -= 1;
+                    currentMove += 1;
+                    graph1.won = false;
+                    graph2.won = false;
+                    screen = "play";
+                }
+            }
+            if (redoButton.clickedOn()) {
+                if (currentMove > 0) {
+                    arraySwap(graph1.perm, pastMoves[pastMoves.length - currentMove][0], pastMoves[pastMoves.length - currentMove][1]);
+                    currentMove -= 1;
+                    moves += 1;
+                }
+            }
         }else if(screen === "menu") {
             for (let row of lvlButtons) {
                 for (let b of row) {
@@ -197,6 +208,28 @@ let gameSketch = function(sketch) {
                     }
                 }
             }
+            if (menuCloseButton.clickedOn()) {
+                screen = "play";
+            }
+        }
+        if(pastMoves.length > 0 && currentMove < pastMoves.length) {
+            undoButton.color = '#3e3e';
+        }else{
+            undoButton.color = '#e33e';
+        }        if (currentMove == 0) {
+            redoButton.color = '#e33e';
+        }else if (pastMoves.length > 0){
+            redoButton.color = '#3e3e';
+        }
+
+        graph1.selected = null;
+        isIso = graph1.isoTo(graph2);
+
+
+        if (isIso && screen === "play") {
+            screen = "won";
+            graph1.won = true;
+            graph2.won = true;
         }
     };
 };

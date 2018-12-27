@@ -92,6 +92,12 @@ function afterLoaded() {
 
 }
 
+function arraySwap(arr, i, j) {
+    let t = arr[i];
+    arr[i] = arr[j];
+    arr[j] = t;
+}
+
 function arraysEqual(arr1, arr2) {
     if (arr1.length != arr2.length) {
         return false;
