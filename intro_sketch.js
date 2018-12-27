@@ -170,6 +170,7 @@ let gameSketch = function(sketch) {
                 graph1.perm = graph1.originalPerm.slice();
                 moves = 0;
                 pastMoves = [];
+                currentMove = 0;
             }
             if(undoButton.clickedOn()) {
                 if (currentMove < pastMoves.length) {
@@ -192,6 +193,8 @@ let gameSketch = function(sketch) {
             if(resetButton.clickedOn()) {
                 graph1.perm = graph1.originalPerm.slice();
                 moves = 0;
+                pastMoves = [];
+                currentMove = 0;
                 screen = "play";
                 graph1.won = false;
                 graph2.won = false;
@@ -244,9 +247,11 @@ let gameSketch = function(sketch) {
             undoButton.color = '#3c3c';
         }else{
             undoButton.color = '#c33c';
-        }        if (currentMove == 0) {
+        }
+        console.log(currentMove);
+        if (currentMove === 0) {
             redoButton.color = '#c33c';
-        }else if (pastMoves.length > 0){
+        }else {
             redoButton.color = '#3c3c';
         }
 
