@@ -88,7 +88,7 @@ let gamep5;
 
 function afterLoaded() {
     gamep5 = new p5(gameSketch, 'gamep5div');
-    let canvas = document.getElementById('defaultCanvas0');
+    let canvas = document.getElementById('gamep5div');
     canvas.addEventListener("touchstart",  function(event) {event.preventDefault()});
     canvas.addEventListener("touchmove",   function(event) {event.preventDefault()});
     canvas.addEventListener("touchend",    function(event) {event.preventDefault()});
