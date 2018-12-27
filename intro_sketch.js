@@ -234,5 +234,6 @@ let gameSketch = function(sketch) {
             graph2.won = true;
         }
     };
+
 };
 
