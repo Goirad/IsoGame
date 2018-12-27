@@ -18,8 +18,10 @@ let gameSketch = function(sketch) {
     let currentMove = 0;
 
     sketch.setup = function() {
-        sketch.createCanvas(sketch.windowWidth, sketch.windowHeight);
-        graph1 = new Graph(sketch.width/2, 2.5*sketch.height/4 - 10, numVerts);
+        let width = Math.min(sketch.windowWidth, 540);
+        let height = Math.min(sketch.windowHeight, 960);
+        sketch.createCanvas(width, height);
+        graph1 = new Graph(numVerts, sketch.width/2, 2.5*sketch.height/4 - 10, width*0.6);
         graph2 = new staticGraph(graph1);
         graph2.y = sketch.height/4 - 10;
         lessButton      = new Button(sketch, 'LESS', sketch.width/2 - 120   , 845, 100, 40);

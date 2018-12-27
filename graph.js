@@ -1,11 +1,12 @@
 class Graph {
-    constructor(x, y, numVerts) {
+    constructor(numVerts, x, y, w) {
         this.x = x;
         this.y = y;
         this.numVerts = numVerts;
         this.graph = Graph.randGraph2(numVerts);
         this.selected = null;
         this.perm = [];
+        this.width = w;
         for (let i = 0; i < numVerts; i++) {
             this.perm.push(i);
         }
@@ -15,7 +16,7 @@ class Graph {
 
         this.dropRadius = this.getDropRadius();
 
-        this.radius = (350 - 10)/(2*(1 + this.dropRadius));
+        this.radius = (this.width - 10)/(2*(1 + this.dropRadius));
 
     }
 
@@ -87,7 +88,7 @@ class Graph {
         context.rectMode(context.CENTER);
         context.stroke(20);
         context.fill(190);
-        context.rect(0, 0, 350, 350, 20);
+        context.rect(0, 0, this.width, this.width, 20);
 
         let vertices = [];
 
@@ -150,7 +151,7 @@ class Graph {
 
 class staticGraph extends Graph {
     constructor(other) {
-        super(other.x, other.y, other.numVerts);
+        super(other.numVerts, other.x, other.y, other.width);
         this.graph = other.graph;
         this.other = other;
         let i = 0;
@@ -167,8 +168,8 @@ class staticGraph extends Graph {
         context.rectMode(context.CENTER);
         context.stroke(20);
         context.fill(190);
-        context.rect(0, 0, 350, 350, 20);
-        let radius = 150;
+        context.rect(0, 0, this.width, this.width, 20);
+
         let vertices = [];
 
         context.fill(150);
@@ -177,8 +178,8 @@ class staticGraph extends Graph {
         //vertices
         for (let i = 0; i < this.numVerts; i++) {
             vertices.push([
-                radius * Math.cos(2 * i * Math.PI / this.numVerts),
-                radius * Math.sin(2 * i * Math.PI / this.numVerts)
+                this.radius * Math.cos(2 * i * Math.PI / this.numVerts),
+                this.radius * Math.sin(2 * i * Math.PI / this.numVerts)
             ]);
         }
 
