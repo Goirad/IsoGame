@@ -17,7 +17,7 @@ let gameSketch = function(sketch) {
     let pastMoves = [];
     let currentMove = 0;
     let playWidth;
-
+    let graphWidth;
     sketch.setup = function() {
         //let height = Math.min(sketch.windowHeight, 960);
         //let width = Math.min(sketch.windowWidth, 540);
@@ -25,11 +25,14 @@ let gameSketch = function(sketch) {
         //let width = height * .5625;
         let width = sketch.windowWidth;
         sketch.createCanvas(width, height);
-        playWidth = width*0.8;
-        if (width >= height) {
-            playWidth = height * 0.5;
+        playWidth = width;
+        graphWidth = width*0.8;
+        if (width >= height*.6) {
+            playWidth = height * 0.6;
+            graphWidth = playWidth * 0.8;
         }
-        graph1 = new Graph(numVerts, sketch.width/2, 2.9*sketch.height/4, playWidth*0.8);
+
+        graph1 = new Graph(numVerts, sketch.width/2, sketch.height*0.65, graphWidth);
         graph2 = new staticGraph(graph1);
         //graph2.y = sketch.height/4;
         let buttWidth = playWidth/5;
@@ -106,7 +109,7 @@ let gameSketch = function(sketch) {
             menuCloseButton.draw();
             sketch.stroke('#444e');
             sketch.fill('#444e');
-            sketch.text('MENU', sketch.width/2, 100);
+            sketch.text('MENU', sketch.width/2, sketch.height/10);
 
             for (let row of lvlButtons) {
                 for (let b of row) {
