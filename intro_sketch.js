@@ -45,17 +45,17 @@ let gameSketch = function(sketch) {
         redoButton.color = '#c33c';
 
         lvlButtons = [];
-        let xSpace = (playWidth-100-280)/5;
-        let ySpace = (sketch.height*0.5-350)/4;
-        buttWidth = (playWidth*0.8 - 4*xSpace)/4;
+        buttWidth = (playWidth*0.8)/(4.5);
+        let xSpace = buttWidth*0.1;
+
         for (let i = 0; i < 4; i++) {
             let row = [];
             for (let j = 0; j < 4; j++) {
                 let n = 4 * i + j + 3;
                 let b = new Button(sketch,
                     '' + n, buttWidth/2,
-                    sketch.width/2 - playWidth/2 + 50 + xSpace + 35 + j * (xSpace + 70),
-                    200 + i * (ySpace + 70),
+                    sketch.width/2 - playWidth/2 + 0.1*playWidth + xSpace + buttWidth/2 + j * (xSpace + buttWidth),
+                    sketch.height/5 + i * (xSpace + buttWidth),
                     buttWidth,
                     buttWidth);
                 row.push(b);
@@ -129,7 +129,7 @@ let gameSketch = function(sketch) {
 
     sketch.reset = function() {
         screen = "play";
-        graph1 = new Graph(numVerts, sketch.width/2, 3*sketch.height/4 , sketch.width*0.8);
+        graph1 = new Graph(numVerts, sketch.width/2, 2.9*sketch.height/4, playWidth*0.8);
         graph2 = new staticGraph(graph1);
         //graph2.y = sketch.height/4;
         moves = 0;
