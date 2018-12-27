@@ -26,10 +26,10 @@ let gameSketch = function(sketch) {
         let width = sketch.windowWidth;
         sketch.createCanvas(width, height);
         playWidth = width;
-        graphWidth = width*0.8;
+        graphWidth = width*0.9;
         if (width >= height*.6) {
             playWidth = height * 0.6;
-            graphWidth = playWidth * 0.8;
+            graphWidth = playWidth * 0.9;
         }
 
         graph1 = new Graph(numVerts, sketch.width/2, sketch.height*0.65, graphWidth);
