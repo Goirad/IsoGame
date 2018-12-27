@@ -16,51 +16,68 @@ let gameSketch = function(sketch) {
     let undoButton, redoButton;
     let pastMoves = [];
     let currentMove = 0;
+    let playWidth;
 
     sketch.setup = function() {
-        let height = Math.min(sketch.windowHeight, 960);
+        //let height = Math.min(sketch.windowHeight, 960);
         //let width = Math.min(sketch.windowWidth, 540);
-        let width = height * .5625;
+        let height  = sketch.windowHeight;
+        //let width = height * .5625;
+        let width = sketch.windowWidth;
         sketch.createCanvas(width, height);
-        graph1 = new Graph(numVerts, sketch.width/2, 2.4*sketch.height/4, width*0.6);
+        playWidth = width*0.8;
+        if (width >= height) {
+            playWidth = height * 0.5;
+        }
+        graph1 = new Graph(numVerts, sketch.width/2, 2.9*sketch.height/4, playWidth*0.8);
         graph2 = new staticGraph(graph1);
-        graph2.y = sketch.height/4;
-        lessButton      = new Button(sketch, 'LESS', sketch.width/2 - 120   , height*0.885, 100, 40);
-        sameButton      = new Button(sketch, 'SAME', sketch.width/2         , height*0.885, 100, 40);
-        moreButton      = new Button(sketch, 'MORE', sketch.width/2 + 120   , height*0.885, 100, 40);
-        menuButton      = new Button(sketch, 'MENU', sketch.width/2 + 120   , height*0.82, 100, 40);
-        resetButton     = new Button(sketch, 'RSET', sketch.width/2 - 120   , height*0.82, 100, 40);
-        menuCloseButton = new Button(sketch, 'X'   , sketch.width - 70      ,         70,  50, 50);
-        undoButton      = new Button(sketch, 'UNDO', sketch.width/2 - 120   , height*0.95, 100, 40);
-        undoButton.color = '#e33e';
-        redoButton      = new Button(sketch, 'REDO', sketch.width/2 + 120   , height*0.95, 100, 40);
-        redoButton.color = '#e33e';
+        //graph2.y = sketch.height/4;
+        let buttWidth = playWidth/5;
+        lessButton      = new Button(sketch, 'LESS', buttWidth/3, sketch.width/2 - buttWidth*1.2    , height*0.25, buttWidth, buttWidth*.4);
+        sameButton      = new Button(sketch, 'SAME', buttWidth/3, sketch.width/2                    , height*0.25, buttWidth, buttWidth*.4);
+        moreButton      = new Button(sketch, 'MORE', buttWidth/3, sketch.width/2 + buttWidth*1.2    , height*0.25, buttWidth, buttWidth*.4);
+        menuButton      = new Button(sketch, 'MENU', buttWidth/3, sketch.width/2 + buttWidth*1.2    , height*0.20, buttWidth, buttWidth*.4);
+        resetButton     = new Button(sketch, 'RSET', buttWidth/3, sketch.width/2 - buttWidth*1.2    , height*0.20, buttWidth,buttWidth*.4);
+        menuCloseButton = new Button(sketch, 'X'   ,          40, sketch.width/2 + playWidth*0.75/2  ,          70,  50, 50);
+        undoButton      = new Button(sketch, 'UNDO', buttWidth/3, sketch.width/2 - buttWidth*1.2    , height*0.3, buttWidth, buttWidth*.4);
+        undoButton.color = '#c33c';
+        redoButton      = new Button(sketch, 'REDO', buttWidth/3, sketch.width/2 + buttWidth*1.2   , height*0.3, buttWidth, buttWidth*.4);
+        redoButton.color = '#c33c';
 
         lvlButtons = [];
-        let xSpace = (sketch.width-100-280)/5;
+        let xSpace = (playWidth-100-280)/5;
         let ySpace = (sketch.height*0.5-350)/4;
-        for (let i = 0; i < 5; i++) {
+        buttWidth = (playWidth*0.8 - 4*xSpace)/4;
+        for (let i = 0; i < 4; i++) {
             let row = [];
             for (let j = 0; j < 4; j++) {
                 let n = 4 * i + j + 3;
-                let b = new Button(sketch, '' + n, 50 + xSpace + 35 + j * (xSpace + 70), 200 + i * (ySpace + 70), 70, 70);
+                let b = new Button(sketch,
+                    '' + n, buttWidth/2,
+                    sketch.width/2 - playWidth/2 + 50 + xSpace + 35 + j * (xSpace + 70),
+                    200 + i * (ySpace + 70),
+                    buttWidth,
+                    buttWidth);
                 row.push(b);
             }
             lvlButtons.push(row);
         }
+        sketch.textFont('Courier New')
     };
 
     sketch.draw = function() {
         sketch.background(220);
-        graph1.draw(sketch);
         graph2.draw(sketch);
+        graph1.draw(sketch);
         sketch.textAlign(sketch.CENTER, sketch.CENTER);
         sketch.textSize(40);
 
         menuButton.draw();
 
         resetButton.draw();
-        sketch.text(moves, sketch.width/2, sketch.height*0.82);
+        sketch.stroke('#444e');
+        sketch.fill('#444e');
+        sketch.text(moves, sketch.width/2, sketch.height*0.2);
 
         undoButton.draw();
         redoButton.draw();
@@ -69,7 +86,7 @@ let gameSketch = function(sketch) {
             sketch.fill('#9b9e');
             sketch.stroke('#444e');
             sketch.strokeWeight(2);
-            sketch.rect(sketch.width/2, 40, sketch.width - 100, 50, 10);
+            sketch.rect(sketch.width/2, 40, playWidth*0.8, 50, 10);
 
             sketch.stroke('#444e');
             sketch.fill('#444e');
@@ -79,15 +96,13 @@ let gameSketch = function(sketch) {
             sameButton.draw();
             moreButton.draw();
         }else if(screen ==="play"){
-            sketch.stroke('#444e');
-            sketch.fill('#444e');
-            sketch.text('GOAL', sketch.width/2, 35);
+
         }else if(screen === "menu") {
             sketch.rectMode(sketch.CENTER, sketch.CENTER);
             sketch.fill('#b99e');
             sketch.stroke('#444e');
             sketch.strokeWeight(2);
-            sketch.rect(sketch.width/2, sketch.height/2, sketch.width - 100, sketch.height-100, 10);
+            sketch.rect(sketch.width/2, sketch.height/2, playWidth*0.8, sketch.height-100, 10);
             menuCloseButton.draw();
             sketch.stroke('#444e');
             sketch.fill('#444e');
@@ -114,9 +129,9 @@ let gameSketch = function(sketch) {
 
     sketch.reset = function() {
         screen = "play";
-        graph1 = new Graph(numVerts, sketch.width/2, 2.4*sketch.height/4 , sketch.width*0.6);
+        graph1 = new Graph(numVerts, sketch.width/2, 3*sketch.height/4 , sketch.width*0.8);
         graph2 = new staticGraph(graph1);
-        graph2.y = sketch.height/4;
+        //graph2.y = sketch.height/4;
         moves = 0;
         currentMove = 0;
         pastMoves = [];
@@ -218,13 +233,13 @@ let gameSketch = function(sketch) {
             }
         }
         if(pastMoves.length > 0 && currentMove < pastMoves.length) {
-            undoButton.color = '#3e3e';
+            undoButton.color = '#3c3c';
         }else{
-            undoButton.color = '#e33e';
+            undoButton.color = '#c33c';
         }        if (currentMove == 0) {
-            redoButton.color = '#e33e';
+            redoButton.color = '#c33c';
         }else if (pastMoves.length > 0){
-            redoButton.color = '#3e3e';
+            redoButton.color = '#3c3c';
         }
 
         graph1.selected = null;

@@ -68,7 +68,7 @@ class Graph {
 
     isVertex(x, y) {
         for (let i = 0; i < this.numVerts; i++) {
-            let deltax = x - (this.x + Math.cos(2 * i * Math.PI / this.numVerts) * this.radius);
+            let deltax = x - (this.x + Math.cos(2 * i * Math.PI / this.numVerts) * this.radius );
             let deltay = y - (this.y + Math.sin(2 * i * Math.PI / this.numVerts) * this.radius);
             if (Math.sqrt(deltax * deltax + deltay * deltay) < this.dropRadius*this.radius) {
                 return i;
@@ -86,22 +86,15 @@ class Graph {
         context.push();
         context.translate(this.x, this.y);
         context.rectMode(context.CENTER);
-        context.stroke(20);
+        /*context.stroke(20);
         context.fill(190);
         context.rect(0, 0, this.width, this.width, 20);
-
+*/
         let vertices = [];
 
         context.fill('#aaaa');
         context.noStroke();
-        //placeholders to know where to drag to
-        if(!this.won) {
-            for (let i = 0; i < this.numVerts; i++) {
-                let x = this.radius * Math.cos(2 * i * Math.PI / this.numVerts);
-                let y = this.radius * Math.sin(2 * i * Math.PI / this.numVerts);
-                context.ellipse(x, y, 2*this.dropRadius*this.radius - 4);
-            }
-        }
+
 
 
         //vertices
@@ -121,10 +114,10 @@ class Graph {
         for (let i = 0; i < this.numVerts - 1; i++) {
             for (let j = i + 1; j < this.numVerts; j++) {
                 if (this.getEdge(this.perm[i], this.perm[j]) === "1") {
-                    context.strokeWeight(4);
+                    context.strokeWeight(5);
                     if(!this.won) {
                         if(i != this.selected && j != this.selected) {
-                            context.stroke('#4444');
+                            context.stroke('#111e');
                         }else{
                             context.stroke('#cc3e');
                         }
@@ -168,13 +161,20 @@ class staticGraph extends Graph {
         context.rectMode(context.CENTER);
         context.stroke(20);
         context.fill(190);
-        context.rect(0, 0, this.width, this.width, 20);
+       context.rect(0, 0, this.width, this.width, 20);
 
         let vertices = [];
 
         context.fill(150);
         context.noStroke();
-
+        //placeholders to know where to drag to
+        if(!this.won) {
+            for (let i = 0; i < this.numVerts; i++) {
+                let x = this.radius  * Math.cos(2 * i * Math.PI / this.numVerts);
+                let y = this.radius* Math.sin(2 * i * Math.PI / this.numVerts);
+                context.ellipse(x, y, 2*this.dropRadius*this.radius - 4);
+            }
+        }
         //vertices
         for (let i = 0; i < this.numVerts; i++) {
             vertices.push([
@@ -188,12 +188,12 @@ class staticGraph extends Graph {
         for (let i = 0; i < this.numVerts - 1; i++) {
             for (let j = i + 1; j < this.numVerts; j++) {
                 if (this.getEdge(this.perm[i], this.perm[j]) === "1") {
-                    context.strokeWeight(4);
+                    context.strokeWeight(15);
                     if(!this.won) {
                         if(this.other.getEdge(this.other.perm[i], this.other.perm[j]) === "1") {
-                            context.stroke('#37dc');
+                            context.stroke('#35e9');
                         }else{
-                            context.stroke('#d33c');
+                            context.stroke('#d339');
                         }
                     }else{
                         context.strokeWeight(6);
@@ -209,7 +209,7 @@ class staticGraph extends Graph {
         context.stroke(0);
         context.strokeWeight(1);
         for (let v in vertices) {
-            context.ellipse(vertices[v][0], vertices[v][1], 15);
+            //context.ellipse(vertices[v][0], vertices[v][1], 15);
         }
         context.pop();
     }
