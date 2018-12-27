@@ -18,29 +18,32 @@ let gameSketch = function(sketch) {
     let currentMove = 0;
 
     sketch.setup = function() {
-        let width = Math.min(sketch.windowWidth, 540);
         let height = Math.min(sketch.windowHeight, 960);
+        //let width = Math.min(sketch.windowWidth, 540);
+        let width = height * .5625;
         sketch.createCanvas(width, height);
         graph1 = new Graph(numVerts, sketch.width/2, 2.4*sketch.height/4, width*0.6);
         graph2 = new staticGraph(graph1);
         graph2.y = sketch.height/4;
-        lessButton      = new Button(sketch, 'LESS', sketch.width/2 - 120   , 845, 100, 40);
-        sameButton      = new Button(sketch, 'SAME', sketch.width/2         , 845, 100, 40);
-        moreButton      = new Button(sketch, 'MORE', sketch.width/2 + 120   , 845, 100, 40);
-        menuButton      = new Button(sketch, 'MENU', sketch.width/2 + 120   , 795, 100, 40);
-        resetButton     = new Button(sketch, 'RSET', sketch.width/2 - 120   , 795, 100, 40);
-        menuCloseButton = new Button(sketch, 'X'   , sketch.width - 70      ,  70,  50, 50);
-        undoButton      = new Button(sketch, 'UNDO', sketch.width/2 - 120   , 895, 100, 40);
+        lessButton      = new Button(sketch, 'LESS', sketch.width/2 - 120   , height*0.885, 100, 40);
+        sameButton      = new Button(sketch, 'SAME', sketch.width/2         , height*0.885, 100, 40);
+        moreButton      = new Button(sketch, 'MORE', sketch.width/2 + 120   , height*0.885, 100, 40);
+        menuButton      = new Button(sketch, 'MENU', sketch.width/2 + 120   , height*0.82, 100, 40);
+        resetButton     = new Button(sketch, 'RSET', sketch.width/2 - 120   , height*0.82, 100, 40);
+        menuCloseButton = new Button(sketch, 'X'   , sketch.width - 70      ,         70,  50, 50);
+        undoButton      = new Button(sketch, 'UNDO', sketch.width/2 - 120   , height*0.95, 100, 40);
         undoButton.color = '#e33e';
-        redoButton      = new Button(sketch, 'REDO', sketch.width/2 + 120   , 895, 100, 40);
+        redoButton      = new Button(sketch, 'REDO', sketch.width/2 + 120   , height*0.95, 100, 40);
         redoButton.color = '#e33e';
 
         lvlButtons = [];
+        let xSpace = (sketch.width-100-280)/5;
+        let ySpace = (sketch.height*0.5-350)/4;
         for (let i = 0; i < 5; i++) {
             let row = [];
             for (let j = 0; j < 4; j++) {
                 let n = 4 * i + j + 3;
-                let b = new Button(sketch, '' + n, 50 + 32 + 35 + j * 102, 200 + i * 100, 70, 70);
+                let b = new Button(sketch, '' + n, 50 + xSpace + 35 + j * (xSpace + 70), 200 + i * (ySpace + 70), 70, 70);
                 row.push(b);
             }
             lvlButtons.push(row);
@@ -111,9 +114,9 @@ let gameSketch = function(sketch) {
 
     sketch.reset = function() {
         screen = "play";
-        graph1 = new Graph(sketch.width/2, 2.5*sketch.height/4 - 10, numVerts);
+        graph1 = new Graph(numVerts, sketch.width/2, 2.4*sketch.height/4 , sketch.width*0.6);
         graph2 = new staticGraph(graph1);
-        graph2.y = sketch.height/4 - 10;
+        graph2.y = sketch.height/4;
         moves = 0;
         currentMove = 0;
         pastMoves = [];
