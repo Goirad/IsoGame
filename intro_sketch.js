@@ -60,7 +60,7 @@ let gameSketch = function(sketch) {
         menuButton.draw();
 
         resetButton.draw();
-        sketch.text(moves, sketch.width/2, 795);
+        sketch.text(moves, sketch.width/2, sketch.height*0.82);
 
         undoButton.draw();
         redoButton.draw();
