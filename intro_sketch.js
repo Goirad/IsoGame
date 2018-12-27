@@ -39,12 +39,12 @@ let gameSketch = function(sketch) {
         lessButton      = new Button(sketch, 'LESS', buttWidth/3, sketch.width/2 - buttWidth*1.2    , height*0.25, buttWidth, buttWidth*.4);
         sameButton      = new Button(sketch, 'SAME', buttWidth/3, sketch.width/2                    , height*0.25, buttWidth, buttWidth*.4);
         moreButton      = new Button(sketch, 'MORE', buttWidth/3, sketch.width/2 + buttWidth*1.2    , height*0.25, buttWidth, buttWidth*.4);
-        menuButton      = new Button(sketch, 'MENU', buttWidth/3, sketch.width/2 + buttWidth*1.2    , height*0.20, buttWidth, buttWidth*.4);
-        resetButton     = new Button(sketch, 'RSET', buttWidth/3, sketch.width/2 - buttWidth*1.2    , height*0.20, buttWidth,buttWidth*.4);
-        menuCloseButton = new Button(sketch, 'X'   ,          40, sketch.width/2 + playWidth*0.75/2  ,          70,  50, 50);
-        undoButton      = new Button(sketch, 'UNDO', buttWidth/3, sketch.width/2 - buttWidth*1.2    , height*0.3, buttWidth, buttWidth*.4);
+        menuButton      = new Button(sketch, 'MENU', buttWidth/3, sketch.width/2 + buttWidth*1.2    , height*0.18, buttWidth, buttWidth*.4);
+        resetButton     = new Button(sketch, 'RSET', buttWidth/3, sketch.width/2 - buttWidth*1.2    , height*0.18, buttWidth,buttWidth*.4);
+        menuCloseButton = new Button(sketch, 'X'   ,          40, sketch.width/2 + playWidth*0.75/2 ,  height*0.07,  50, 50);
+        undoButton      = new Button(sketch, 'UNDO', buttWidth/3, sketch.width/2 - buttWidth*1.2    , height*0.32, buttWidth, buttWidth*.4);
         undoButton.color = '#c33c';
-        redoButton      = new Button(sketch, 'REDO', buttWidth/3, sketch.width/2 + buttWidth*1.2   , height*0.3, buttWidth, buttWidth*.4);
+        redoButton      = new Button(sketch, 'REDO', buttWidth/3, sketch.width/2 + buttWidth*1.2    , height*0.32, buttWidth, buttWidth*.4);
         redoButton.color = '#c33c';
 
         lvlButtons = [];
@@ -80,7 +80,7 @@ let gameSketch = function(sketch) {
         resetButton.draw();
         sketch.stroke('#444e');
         sketch.fill('#444e');
-        sketch.text(moves, sketch.width/2, sketch.height*0.2);
+        sketch.text(moves, sketch.width/2, sketch.height*0.18);
 
         undoButton.draw();
         redoButton.draw();
@@ -105,7 +105,7 @@ let gameSketch = function(sketch) {
             sketch.fill('#b99e');
             sketch.stroke('#444e');
             sketch.strokeWeight(2);
-            sketch.rect(sketch.width/2, sketch.height/2, playWidth*0.8, sketch.height-100, 10);
+            sketch.rect(sketch.width/2, sketch.height/2, playWidth*0.8, sketch.height*0.9, 10);
             menuCloseButton.draw();
             sketch.stroke('#444e');
             sketch.fill('#444e');
@@ -132,7 +132,7 @@ let gameSketch = function(sketch) {
 
     sketch.reset = function() {
         screen = "play";
-        graph1 = new Graph(numVerts, sketch.width/2, 2.9*sketch.height/4, playWidth*0.8);
+        graph1 = new Graph(numVerts, sketch.width/2, sketch.height*0.65, graphWidth);
         graph2 = new staticGraph(graph1);
         //graph2.y = sketch.height/4;
         moves = 0;

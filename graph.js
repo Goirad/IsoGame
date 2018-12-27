@@ -105,7 +105,7 @@ class Graph {
                     this.radius * Math.sin(2 * i * Math.PI / this.numVerts)
                 ]);
             }else{
-                vertices.push([context.mouseX - this.x, context.mouseY - this.y]);
+                vertices.push([context.mouseX - this.x, context.mouseY - this.y - context.height*0.1]);
             }
         }
 
