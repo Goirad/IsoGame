@@ -76,7 +76,7 @@ function MenuScreen(context, playWidth) {
             for (let b of row) {
                 if(b.clickedOn()) {
                     context.numVerts = parseInt(b.text);
-                    context.levelLabel.text = 'LEVEL    ' + context.numVerts;
+                    context.levelLabel.text = 'LEVEL   ' + context.numVerts;
                     context.reset();
                 }
             }
@@ -162,7 +162,7 @@ function HelpScreen(context) {
         this.context.text('whether to move the  ', leftPos, upPos +  11*this.h/25);
         this.context.text('graph vertices, the  ', leftPos, upPos +  12*this.h/25);
         this.context.text('goal vertices, or    ', leftPos, upPos +  13*this.h/25);
-        this.context.text('both                 ', leftPos, upPos +  14*this.h/25);
+        this.context.text('both.                ', leftPos, upPos +  14*this.h/25);
 
     };
 

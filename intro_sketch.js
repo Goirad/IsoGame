@@ -64,8 +64,8 @@ let gameSketch = function(sketch) {
         helpScreen = new HelpScreen(sketch);
         titleLabel = new Label(sketch, 'Iso Game', sketch.width/2 - this.playWidth/4, sketch.height*0.05, this.playWidth/2, this.playWidth*0.1);
         titleLabel.center = true;
-        movesLabel        = new Label(sketch, 'MOVES    ' + moves, sketch.width/2 - buttWidth*1.7, height*0.12, this.playWidth*0.44, buttWidth*0.4);
-        this.levelLabel = new Label(sketch, 'LEVEL    ' + this.numVerts, sketch.width/2 - buttWidth*1.7, height*0.2, this.playWidth*0.44, buttWidth*0.4);
+        movesLabel        = new Label(sketch, 'MOVES   ' + moves, sketch.width/2 - buttWidth*1.7, height*0.12, this.playWidth*0.44, buttWidth*0.4);
+        this.levelLabel = new Label(sketch, 'LEVEL   ' + this.numVerts, sketch.width/2 - buttWidth*1.7, height*0.2, this.playWidth*0.44, buttWidth*0.4);
         advancedMoveLabel1 = new Label(sketch, 'MOVE GOAL', sketch.width/2 - this.playWidth/2 + this.playWidth/20, height*0.93, this.playWidth*0.3, buttWidth*0.3);
         advancedMoveLabel2 = new Label(sketch, 'MOVE GRPH', sketch.width/2  + this.playWidth/40, height*0.93, this.playWidth*0.3, buttWidth*0.3);
 
@@ -284,7 +284,7 @@ let gameSketch = function(sketch) {
         graph1.selected = null;
         graph2.selected = null;
         isIso = graph1.isoTo(graph2);
-        movesLabel.text = 'MOVES    ' + moves;
+        movesLabel.text = 'MOVES   ' + moves;
 
 
 
