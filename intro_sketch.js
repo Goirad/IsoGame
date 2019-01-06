@@ -1,254 +1,280 @@
 let gameSketch = function(sketch) {
-    let numVerts = 4;
+    //state
     let graph1;
     let graph2;
     let isIso = false;
     let moves = 0;
-
-    let screen = "play";
-    let sameButton;
-    let lessButton;
-    let moreButton;
-    let menuButton;
-    let resetButton;
-    let lvlButtons;
-    let menuCloseButton;
-    let undoButton, redoButton;
     let pastMoves = [];
     let currentMove = 0;
-    let playWidth;
     let graphWidth;
+    let won = false;
+
+    //menu
+    let menuCloseButton;
+
+
+    //play
+    let menuButton;
+    let resetButton;
+    let undoButton, redoButton;
+    let helpButton;
+
+    //options
+    let menuScreen;
+    let helpScreen;
+    let moveGoal = false;
+    let moveGoalCheckbox;
+    let moveAns = true;
+    let moveAnsCheckbox;
+    let advancedMoveLabel1;
+    let advancedMoveLabel2;
+    let movesLabel;
+    let titleLabel;
+
     sketch.setup = function() {
-        //let height = Math.min(sketch.windowHeight, 960);
-        //let width = Math.min(sketch.windowWidth, 540);
+        this.advancedMove = false; //whether to display advanced move checkboxes
+        this.gameScreen = "play";
+        this.offsetTouch = true;
+        this.numVerts = 4;
         let height  = sketch.windowHeight;
-        //let width = height * .5625;
         let width = sketch.windowWidth;
         sketch.createCanvas(width, height);
-        playWidth = width;
-        graphWidth = width*0.9;
         if (width >= height*.6) {
-            playWidth = height * 0.6;
-            graphWidth = playWidth * 0.9;
+            this.playWidth = height * 0.6;
+            graphWidth = this.playWidth * 0.9;
+        }else{
+            this.playWidth = width;
+            graphWidth = width*0.9;
         }
 
-        graph1 = new Graph(numVerts, sketch.width/2, sketch.height*0.6, graphWidth);
+        graph1 = new Graph(this.numVerts, sketch.width/2, sketch.height*0.6, graphWidth);
         graph2 = new staticGraph(graph1);
         //graph2.y = sketch.height/4;
-        let buttWidth = playWidth/5;
-        lessButton      = new Button(sketch, 'LESS', buttWidth/3, sketch.width/2 - buttWidth*1.2    , height*0.20, buttWidth, buttWidth*.4);
-        sameButton      = new Button(sketch, 'SAME', buttWidth/3, sketch.width/2                    , height*0.20, buttWidth, buttWidth*.4);
-        moreButton      = new Button(sketch, 'MORE', buttWidth/3, sketch.width/2 + buttWidth*1.2    , height*0.20, buttWidth, buttWidth*.4);
-        menuButton      = new Button(sketch, 'MENU', buttWidth/3, sketch.width/2 + buttWidth*1.2    , height*0.12, buttWidth, buttWidth*.4);
-        resetButton     = new Button(sketch, 'RSET', buttWidth/3, sketch.width/2 - buttWidth*1.2    , height*0.12, buttWidth,buttWidth*.4);
-        menuCloseButton = new Button(sketch, 'X'   ,          40, sketch.width/2 + playWidth*0.75/2 ,  height*0.07,  50, 50);
-        undoButton      = new Button(sketch, 'UNDO', buttWidth/3, sketch.width/2 - buttWidth*1.2    , height*0.28, buttWidth, buttWidth*.4);
+        let buttWidth = this.playWidth/5;
+
+        menuButton      = new Button(sketch, 'MENU', buttWidth/3, sketch.width/2 + buttWidth*1.2    , height*0.20, buttWidth, buttWidth*.4);
+        resetButton     = new Button(sketch, 'RSET', buttWidth/3, sketch.width/2 + buttWidth*1.2    , height*0.12, buttWidth,buttWidth*.4);
+        undoButton      = new Button(sketch, 'UNDO', buttWidth/3, sketch.width/2     , height*0.28, buttWidth, buttWidth*.4);
         undoButton.color = '#c33c';
         redoButton      = new Button(sketch, 'REDO', buttWidth/3, sketch.width/2 + buttWidth*1.2    , height*0.28, buttWidth, buttWidth*.4);
         redoButton.color = '#c33c';
+        helpButton      = new Button(sketch, 'HELP', buttWidth/3, sketch.width/2 - buttWidth*1.2, height*0.28, buttWidth, buttWidth*0.4);
 
-        lvlButtons = [];
-        buttWidth = (playWidth*0.8)/(4.5);
-        let xSpace = buttWidth*0.1;
+        menuScreen = new MenuScreen(sketch, this.playWidth);
+        helpScreen = new HelpScreen(sketch);
+        titleLabel = new Label(sketch, 'Iso Game', sketch.width/2 - this.playWidth/4, sketch.height*0.05, this.playWidth/2, this.playWidth*0.1);
+        titleLabel.center = true;
+        movesLabel        = new Label(sketch, 'MOVES    ' + moves, sketch.width/2 - buttWidth*1.7, height*0.12, this.playWidth*0.44, buttWidth*0.4);
+        this.levelLabel = new Label(sketch, 'LEVEL    ' + this.numVerts, sketch.width/2 - buttWidth*1.7, height*0.2, this.playWidth*0.44, buttWidth*0.4);
+        advancedMoveLabel1 = new Label(sketch, 'MOVE GOAL', sketch.width/2 - this.playWidth/2 + this.playWidth/20, height*0.93, this.playWidth*0.3, buttWidth*0.3);
+        advancedMoveLabel2 = new Label(sketch, 'MOVE GRPH', sketch.width/2  + this.playWidth/40, height*0.93, this.playWidth*0.3, buttWidth*0.3);
 
-        for (let i = 0; i < 4; i++) {
-            let row = [];
-            for (let j = 0; j < 4; j++) {
-                let n = 4 * i + j + 3;
-                let b = new Button(sketch,
-                    '' + n, buttWidth/2,
-                    sketch.width/2 - playWidth/2 + 0.1*playWidth + xSpace + buttWidth/2 + j * (xSpace + buttWidth),
-                    sketch.height/5 + i * (xSpace + buttWidth),
-                    buttWidth,
-                    buttWidth);
-                row.push(b);
-            }
-            lvlButtons.push(row);
-        }
+        moveGoalCheckbox = new CheckBox(sketch, sketch.width/2 - this.playWidth/40 - this.playWidth/20, height * 0.93, this.playWidth/10);
+        moveGoalCheckbox.checked = false;
+        moveAnsCheckbox = new CheckBox(sketch, sketch.width/2 + this.playWidth/2 - this.playWidth/10, height * 0.93, this.playWidth/10);
+        moveAnsCheckbox.checked = true;
+
         sketch.textFont('Courier New')
     };
 
     sketch.draw = function() {
-        sketch.background(220);
+
+        sketch.background(230);
+        sketch.rectMode(sketch.CENTER);
+        sketch.strokeWeight(2);
+        sketch.fill(220);
+        sketch.rect(sketch.width/2, sketch.height/2, sketch.playWidth, sketch.height*0.99, 5);
         graph2.draw(sketch);
         graph1.draw(sketch);
         sketch.textAlign(sketch.CENTER, sketch.CENTER);
         sketch.textSize(40);
+        sketch.fill('#444e');
+        //sketch.text('IsoGame', sketch.width/2, sketch.height*0.05);
 
         menuButton.draw();
-
+        titleLabel.draw();
         resetButton.draw();
         sketch.stroke('#444e');
         sketch.fill('#444e');
-        sketch.text(moves, sketch.width/2, sketch.height*0.12);
+        movesLabel.draw();
+        sketch.levelLabel.draw();
 
         undoButton.draw();
+        helpButton.draw();
         redoButton.draw();
-        if(screen === "won") {
-            sketch.rectMode(sketch.CENTER, sketch.CENTER);
-            sketch.fill('#9b9e');
-            sketch.stroke('#444e');
-            sketch.strokeWeight(2);
-            sketch.rect(sketch.width/2, 40, playWidth*0.8, 50, 10);
+        if(sketch.advancedMove) {
+            advancedMoveLabel1.draw();
+            advancedMoveLabel2.draw();
+            moveGoalCheckbox.draw();
+            moveAnsCheckbox.draw();
+        }
 
-            sketch.stroke('#444e');
-            sketch.fill('#444e');
-            sketch.text('Good Job!', sketch.width/2, 40);
 
-            lessButton.draw();
-            sameButton.draw();
-            moreButton.draw();
-        }else if(screen ==="play"){
+        if(sketch.gameScreen === "play") {
+            if (won) {
+                sketch.rectMode(sketch.CENTER, sketch.CENTER);
+                sketch.fill('#9b9e');
+                sketch.stroke('#444e');
+                sketch.strokeWeight(2);
+                sketch.rect(sketch.width/2, 40, this.playWidth*0.8, 50, 10);
 
-        }else if(screen === "menu") {
-            sketch.rectMode(sketch.CENTER, sketch.CENTER);
-            sketch.fill('#b99e');
-            sketch.stroke('#444e');
-            sketch.strokeWeight(2);
-            sketch.rect(sketch.width/2, sketch.height/2, playWidth*0.8, sketch.height*0.9, 10);
-            menuCloseButton.draw();
-            sketch.stroke('#444e');
-            sketch.fill('#444e');
-            sketch.text('MENU', sketch.width/2, sketch.height/10);
+                sketch.stroke('#444e');
+                sketch.fill('#444e');
+               // sketch.text('Good Job!', sketch.width/2, 40);
 
-            for (let row of lvlButtons) {
-                for (let b of row) {
-                    b.draw();
-                }
             }
+        }else if(sketch.gameScreen === "help"){
+            helpScreen.draw();
+        }else if(sketch.gameScreen === "menu") {
+            menuScreen.draw();
         }
 
     };
 
 
     sketch.mousePressed = function() {
-        if (screen === "play") {
+        if (this.gameScreen === "play" && !won) {
             let v = graph1.isVertex(sketch.mouseX, sketch.mouseY);
             if (v != null) {
-                graph1.selected = v;
+                if(moveAns) graph1.selected = v;
+                if(moveGoal) graph2.selected = v;
             }
         }
     };
 
     sketch.reset = function() {
-        screen = "play";
-        graph1 = new Graph(numVerts, sketch.width/2, sketch.height*0.6, graphWidth);
+        won = false;
+        this.gameScreen = "play";
+        graph1 = new Graph(this.numVerts, sketch.width/2, sketch.height*0.6, graphWidth);
         graph2 = new staticGraph(graph1);
-        //graph2.y = sketch.height/4;
         moves = 0;
         currentMove = 0;
         pastMoves = [];
     };
 
     sketch.mouseReleased = function() {
-        let v;
-        if (graph1.selected == null) {
-            v = graph1.isVertex(sketch.mouseX, sketch.mouseY);
-        }else{
-            v = graph1.isVertex(sketch.mouseX, sketch.mouseY - sketch.height*0.1);
-        }
-        if (v != null && v != graph1.selected && graph1.selected != null) {
-            arraySwap(graph1.perm, v, graph1.selected);
-            if (currentMove > 0) {
-                let newLength = pastMoves.length - currentMove;
-                //console.log("slicing at " + currentMove);
-                //console.log("slicing from 0 to " + newLength);
-                pastMoves = pastMoves.slice(0, pastMoves.length - currentMove);
-                currentMove = 0;
-            }
-            pastMoves.push([v, graph1.selected]);
-            console.log(pastMoves);
-            moves += 1;
-        }
+        if (this.gameScreen === "play") {
+            if(won) {
 
-
-        if (screen === "play") {
-            if(menuButton.clickedOn()) {
-                screen = "menu";
-            }
-            if(resetButton.clickedOn()) {
-                graph1.perm = graph1.originalPerm.slice();
-                moves = 0;
-                pastMoves = [];
-                currentMove = 0;
-            }
-            if(undoButton.clickedOn()) {
-                if (currentMove < pastMoves.length) {
-                    arraySwap(graph1.perm, pastMoves[pastMoves.length - 1 - currentMove][0], pastMoves[pastMoves.length - 1 - currentMove][1]);
-                    moves -= 1;
-                    currentMove += 1;
+            }else {
+                let v;
+                if (sketch.offsetTouch) {
+                    v = graph1.isVertex(sketch.mouseX, sketch.mouseY - sketch.height*0.1);
+                }else{
+                    v = graph1.isVertex(sketch.mouseX, sketch.mouseY);
                 }
-            }
-            if (redoButton.clickedOn()) {
-                if (currentMove > 0) {
-                    arraySwap(graph1.perm, pastMoves[pastMoves.length - currentMove][0], pastMoves[pastMoves.length - currentMove][1]);
-                    currentMove -= 1;
+                let ansSwapped = null;
+                let goalSwapped = null;
+                if (moveAns) {
+                    if (v != null && v != graph1.selected && graph1.selected != null) {
+                        arraySwap(graph1.perm, v, graph1.selected);
+                        ansSwapped = graph1.selected;
+                        if (currentMove > 0) {
+                            let newLength = pastMoves.length - currentMove;
+                            pastMoves = pastMoves.slice(0, newLength);
+                            currentMove = 0;
+                        }
+                    }
+                }
+                if(moveGoal) {
+                    if (v != null && v != graph2.selected && graph2.selected != null) {
+                        arraySwap(graph2.perm, v, graph2.selected);
+                        goalSwapped = graph2.selected;
+                        if (currentMove > 0) {
+                            let newLength = pastMoves.length - currentMove;
+                            pastMoves = pastMoves.slice(0, newLength);
+                            currentMove = 0;
+                        }
+                    }
+                }
+                if(ansSwapped != null|| goalSwapped != null) {
+                    let id;
+                    if (ansSwapped != null && goalSwapped == null) {
+                        id = 0;
+                        pastMoves.push([id, v, graph1.selected]);
+                    }else if(ansSwapped == null && goalSwapped != null) {
+                        id = 1;
+                        pastMoves.push([id, v, graph2.selected]);
+                    }else if(ansSwapped != null && goalSwapped != null) {
+                        id = 2;
+                        pastMoves.push([id, v, graph1.selected]);
+                    }
                     moves += 1;
                 }
             }
-        }else if(screen === "won") {
+            if (graph1.selected == null && graph2.selected == null && this.advancedMove) {
+                moveGoalCheckbox.clickedOn();
+                moveGoal = moveGoalCheckbox.checked;
+                moveAnsCheckbox.clickedOn();
+                moveAns = moveAnsCheckbox.checked;
+            }
             if(menuButton.clickedOn()) {
-                screen = "menu";
+                this.gameScreen = "menu";
+            }
+            if(helpButton.clickedOn()) {
+                this.gameScreen = "help";
             }
             if(resetButton.clickedOn()) {
+                won = false;
                 graph1.perm = graph1.originalPerm.slice();
+                graph2.perm = graph2.originalPerm.slice();
                 moves = 0;
                 pastMoves = [];
                 currentMove = 0;
-                screen = "play";
+                this.gameScreen = "play";
                 graph1.won = false;
                 graph2.won = false;
             }
-            if(sameButton.clickedOn()) {
-                sketch.reset();
-            }
-            if(lessButton.clickedOn()) {
-                numVerts -= 1;
-                sketch.reset();
-            }
-            if(moreButton.clickedOn()) {
-                console.log("before " + numVerts);
-                numVerts += 1;
-                console.log("after " + numVerts);
-                sketch.reset();
-            }
-
             if(undoButton.clickedOn()) {
                 if (currentMove < pastMoves.length) {
-                    arraySwap(graph1.perm, pastMoves[pastMoves.length - 1 - currentMove][0], pastMoves[pastMoves.length - 1 - currentMove][1]);
+                    let id = pastMoves[pastMoves.length - 1 - currentMove][0];
+                    if (id === 0) {
+                        arraySwap(graph1.perm, pastMoves[pastMoves.length - 1 - currentMove][1], pastMoves[pastMoves.length - 1 - currentMove][2]);
+                    }else if (id === 1) {
+                        arraySwap(graph2.perm, pastMoves[pastMoves.length - 1 - currentMove][1], pastMoves[pastMoves.length - 1 - currentMove][2]);
+                    }else if (id === 2) {
+                        arraySwap(graph1.perm, pastMoves[pastMoves.length - 1 - currentMove][1], pastMoves[pastMoves.length - 1 - currentMove][2]);
+                        arraySwap(graph2.perm, pastMoves[pastMoves.length - 1 - currentMove][1], pastMoves[pastMoves.length - 1 - currentMove][2]);
+                    }
                     moves -= 1;
                     currentMove += 1;
-                    graph1.won = false;
-                    graph2.won = false;
-                    screen = "play";
+                    if(won) {
+                        graph1.won = false;
+                        graph2.won = false;
+                        won = false;
+                    }
                 }
             }
             if (redoButton.clickedOn()) {
                 if (currentMove > 0) {
-                    arraySwap(graph1.perm, pastMoves[pastMoves.length - currentMove][0], pastMoves[pastMoves.length - currentMove][1]);
+                    let id = pastMoves[pastMoves.length - 1 - currentMove][0];
+                    if (id === 0) {
+                        arraySwap(graph1.perm, pastMoves[pastMoves.length - 1 - currentMove][1], pastMoves[pastMoves.length - 1 - currentMove][2]);
+                    }else if (id === 1) {
+                        arraySwap(graph1.perm, pastMoves[pastMoves.length - 1 - currentMove][1], pastMoves[pastMoves.length - 1 - currentMove][2]);
+                    }else if (id === 2) {
+                        arraySwap(graph1.perm, pastMoves[pastMoves.length - 1 - currentMove][1], pastMoves[pastMoves.length - 1 - currentMove][2]);
+                        arraySwap(graph1.perm, pastMoves[pastMoves.length - 1 - currentMove][1], pastMoves[pastMoves.length - 1 - currentMove][2]);
+                    }
                     currentMove -= 1;
                     moves += 1;
-                }
-            }
-        }else if(screen === "menu") {
-            for (let row of lvlButtons) {
-                for (let b of row) {
-                    if(b.clickedOn()) {
-                        numVerts = parseInt(b.text);
-                        sketch.reset();
+                    if(won) {
+                        graph1.won = false;
+                        graph2.won = false;
+                        won = false;
                     }
                 }
             }
-            if (menuCloseButton.clickedOn()) {
-                screen = "play";
-            }
+        }else if(this.gameScreen === "menu") {
+            menuScreen.mouseReleased();
+        }else if(this.gameScreen === "help") {
+            helpScreen.mouseReleased();
         }
         if(pastMoves.length > 0 && currentMove < pastMoves.length) {
             undoButton.color = '#3c3c';
         }else{
             undoButton.color = '#c33c';
         }
-        console.log(currentMove);
         if (currentMove === 0) {
             redoButton.color = '#c33c';
         }else {
@@ -256,11 +282,14 @@ let gameSketch = function(sketch) {
         }
 
         graph1.selected = null;
+        graph2.selected = null;
         isIso = graph1.isoTo(graph2);
+        movesLabel.text = 'MOVES    ' + moves;
 
 
-        if (isIso && screen === "play") {
-            screen = "won";
+
+        if (isIso && this.gameScreen === "play") {
+            won = true;
             graph1.won = true;
             graph2.won = true;
         }

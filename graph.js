@@ -28,7 +28,6 @@ class Graph {
     }
 
     static randGraph2(numVerts) {
-        let out = "";
         let temp = [];
         let edges = numVerts * (numVerts - 1) / 2;
         let t = numVerts;
@@ -105,7 +104,11 @@ class Graph {
                     this.radius * Math.sin(2 * i * Math.PI / this.numVerts)
                 ]);
             }else{
-                vertices.push([context.mouseX - this.x, context.mouseY - this.y - context.height*0.1]);
+                if (context.offsetTouch) {
+                    vertices.push([context.mouseX - this.x, context.mouseY - this.y - context.height*0.1]);
+                }else{
+                    vertices.push([context.mouseX - this.x, context.mouseY - this.y]);
+                }
             }
         }
 
@@ -136,7 +139,7 @@ class Graph {
         context.stroke(0);
         context.strokeWeight(1);
         for (let v in vertices) {
-            context.ellipse(vertices[v][0], vertices[v][1], 15);
+            context.ellipse(vertices[v][0], vertices[v][1], 17);
         }
         context.pop();
     }
@@ -152,6 +155,7 @@ class staticGraph extends Graph {
             shuffle(this.perm);
             i ++;
         }
+        this.originalPerm = this.perm.slice();
         //console.log("shuffled " + i);
     }
 
@@ -160,27 +164,35 @@ class staticGraph extends Graph {
         context.translate(this.x, this.y);
         context.rectMode(context.CENTER);
         context.stroke(20);
-        context.fill(190);
-       context.rect(0, 0, this.width, this.width, 20);
+        context.fill(200);
+        context.rect(0, 0, this.width, this.width, 20);
 
         let vertices = [];
 
-        context.fill(150);
-        context.noStroke();
-        //placeholders to know where to drag to
-        if(!this.won) {
-            for (let i = 0; i < this.numVerts; i++) {
-                let x = this.radius  * Math.cos(2 * i * Math.PI / this.numVerts);
-                let y = this.radius* Math.sin(2 * i * Math.PI / this.numVerts);
-                context.ellipse(x, y, 2*this.dropRadius*this.radius - 4);
-            }
-        }
+
+
         //vertices
         for (let i = 0; i < this.numVerts; i++) {
-            vertices.push([
-                this.radius * Math.cos(2 * i * Math.PI / this.numVerts),
-                this.radius * Math.sin(2 * i * Math.PI / this.numVerts)
-            ]);
+            if(i != this.selected) {
+                vertices.push([
+                    this.radius * Math.cos(2 * i * Math.PI / this.numVerts),
+                    this.radius * Math.sin(2 * i * Math.PI / this.numVerts)
+                ]);
+            }else{
+                if (context.offsetTouch) {
+                    vertices.push([context.mouseX - this.x, context.mouseY - this.y - context.height*0.1]);
+                }else{
+                    vertices.push([context.mouseX - this.x, context.mouseY - this.y]);
+                }
+            }
+        }
+        //placeholders to know where to drag to
+        context.fill(150, 200);
+        context.noStroke();
+        if(!this.won) {
+            for (let v of vertices) {
+                context.ellipse(v[0], v[1], 2*this.dropRadius*this.radius - 4);
+            }
         }
 
         //draw edges
@@ -190,11 +202,20 @@ class staticGraph extends Graph {
                 if (this.getEdge(this.perm[i], this.perm[j]) === "1") {
                     context.strokeWeight(15);
                     if(!this.won) {
-                        if(this.other.getEdge(this.other.perm[i], this.other.perm[j]) === "1") {
-                            context.stroke('#35e9');
+                        if (i != this.selected && j != this.selected) {
+                            if(this.other.getEdge(this.other.perm[i], this.other.perm[j]) === "1") {
+                                context.stroke('#35e9');
+                            }else{
+                                context.stroke('#d339');
+                            }
                         }else{
-                            context.stroke('#d339');
+                            if(this.other.getEdge(this.other.perm[i], this.other.perm[j]) === "1") {
+                                context.stroke('#35ef');
+                            }else{
+                                context.stroke('#d33f');
+                            }
                         }
+
                     }else{
                         context.strokeWeight(6);
                         context.stroke('#11fe');
@@ -208,13 +229,7 @@ class staticGraph extends Graph {
         context.fill(0);
         context.stroke(0);
         context.strokeWeight(1);
-        for (let v in vertices) {
-            //context.ellipse(vertices[v][0], vertices[v][1], 15);
-        }
+
         context.pop();
     }
-}
-
-class activeGraph extends Graph {
-
 }
