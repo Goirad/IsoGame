@@ -187,6 +187,7 @@ function HelpScreen(context) {
         this.context.rectMode(this.context.CENTER);
         this.context.rect(cx, upPos + 3*this.h/25 - 0.5*this.h/25, this.w*0.9, this.h/25*6.5, 5);
         this.context.rect(cx, upPos + 9*this.h/25 - 0.5*this.h/25, this.w*0.9, this.h/25*4.5, 5);
+        this.context.rect(cx, upPos + 14.5*this.h/25 - 0.5*this.h/25, this.w*0.9, this.h/25*5.5, 5);
 
         this.context.fill('#444e');
         this.context.noStroke();
@@ -201,6 +202,13 @@ function HelpScreen(context) {
         this.context.text('sent to the selected ', leftPos, upPos +  8*this.h/25);
         this.context.text('level and get a new  ', leftPos, upPos +  9*this.h/25);
         this.context.text('puzzle of that level.', leftPos, upPos +  10*this.h/25);
+
+        this.context.text('You can also undo    ', leftPos, upPos +  12*this.h/25);
+        this.context.text('after winning if you ', leftPos, upPos +  13*this.h/25);
+        this.context.text('want to go to a      ', leftPos, upPos +  14*this.h/25);
+        this.context.text('specific point in the', leftPos, upPos +  15*this.h/25);
+        this.context.text('attempt.             ', leftPos, upPos +  16*this.h/25);
+
 
 
 
