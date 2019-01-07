@@ -163,7 +163,7 @@ class staticGraph extends Graph {
         context.push();
         context.translate(this.x, this.y);
         context.rectMode(context.CENTER);
-        context.stroke(20);
+        context.stroke(2);
         context.fill(200);
         context.rect(0, 0, this.width, this.width, 20);
 

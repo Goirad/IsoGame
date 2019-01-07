@@ -119,6 +119,8 @@ function HelpScreen(context) {
 
 
     this.draw = function() {
+        this.context.push();
+
         this.context.rectMode(this.context.CENTER, this.context.CENTER);
         this.context.fill(this.backgroundColor);
         this.context.stroke(this.borderColor);
@@ -137,6 +139,9 @@ function HelpScreen(context) {
         }else if (currentPage === 2) {
             this.drawPage2();
         }
+        this.context.pop();
+
+
     };
 
     this.drawPage2 = function() {

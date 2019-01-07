@@ -93,9 +93,9 @@ let gameSketch = function(sketch) {
         sketch.textSize(40);
         sketch.fill('#444e');
         //sketch.text('IsoGame', sketch.width/2, sketch.height*0.05);
+        titleLabel.draw();
 
         menuButton.draw();
-        titleLabel.draw();
         resetButton.draw();
         sketch.stroke('#444e');
         sketch.fill('#444e');
@@ -114,18 +114,7 @@ let gameSketch = function(sketch) {
 
 
         if(sketch.gameScreen === "play") {
-            if (won) {
-                sketch.rectMode(sketch.CENTER, sketch.CENTER);
-                sketch.fill('#9b9e');
-                sketch.stroke('#444e');
-                sketch.strokeWeight(2);
-                sketch.rect(sketch.width/2, 40, this.playWidth*0.8, 50, 10);
 
-                sketch.stroke('#444e');
-                sketch.fill('#444e');
-               // sketch.text('Good Job!', sketch.width/2, 40);
-
-            }
         }else if(sketch.gameScreen === "help"){
             helpScreen.draw();
         }else if(sketch.gameScreen === "menu") {
