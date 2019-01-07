@@ -76,7 +76,7 @@ function MenuScreen(context, playWidth) {
             for (let b of row) {
                 if (b.clickedOn()) {
                     context.numVerts = parseInt(b.text);
-                    context.levelLabel.text = 'LEVEL   ' + context.numVerts;
+                    context.levelLabel.update();
                     context.reset();
                 }
             }
@@ -325,6 +325,7 @@ function WinScreen(context) {
     lessButton.mouseReleased = function () {
         if (this.clickedOn()) {
             context.numVerts -= 1;
+            context.levelLabel.update();
             context.reset();
         }
     };
@@ -332,6 +333,7 @@ function WinScreen(context) {
     sameButton.mouseReleased = function () {
         if (this.clickedOn()) {
             context.gameScreen = "play";
+            context.levelLabel.update();
             context.reset();
         }
     };
@@ -339,6 +341,7 @@ function WinScreen(context) {
     moreButton.mouseReleased = function () {
         if (this.clickedOn()) {
             context.numVerts += 1;
+            context.levelLabel.update();
             context.reset();
         }
     };

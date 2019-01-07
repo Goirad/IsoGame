@@ -69,6 +69,9 @@ let gameSketch = function (sketch) {
         titleLabel.center = true;
         movesLabel = new Label(sketch, 'MOVES   ' + moves, sketch.width / 2 - buttWidth * 1.7, height * 0.12, this.playWidth * 0.44, buttWidth * 0.4);
         this.levelLabel = new Label(sketch, 'LEVEL   ' + this.numVerts, sketch.width / 2 - buttWidth * 1.7, height * 0.2, this.playWidth * 0.44, buttWidth * 0.4);
+        this.levelLabel.update = function() {
+            this.text = 'LEVEL   ' + this.context.numVerts;
+        };
         advancedMoveLabel1 = new Label(sketch, 'MOVE GOAL', sketch.width / 2 - this.playWidth / 2 + this.playWidth / 20, height * 0.93, this.playWidth * 0.3, buttWidth * 0.3);
         advancedMoveLabel2 = new Label(sketch, 'MOVE GRPH', sketch.width / 2 + this.playWidth / 40, height * 0.93, this.playWidth * 0.3, buttWidth * 0.3);
 
