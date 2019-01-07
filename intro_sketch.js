@@ -22,6 +22,7 @@ let gameSketch = function(sketch) {
     //options
     let menuScreen;
     let helpScreen;
+    let winScreen;
     let moveGoal = false;
     let moveGoalCheckbox;
     let moveAns = true;
@@ -36,6 +37,7 @@ let gameSketch = function(sketch) {
         this.gameScreen = "play";
         this.offsetTouch = true;
         this.numVerts = 4;
+        this.winScreenClosed = false;
         let height  = sketch.windowHeight;
         let width = sketch.windowWidth;
         sketch.createCanvas(width, height);
@@ -62,6 +64,7 @@ let gameSketch = function(sketch) {
 
         menuScreen = new MenuScreen(sketch, this.playWidth);
         helpScreen = new HelpScreen(sketch);
+        winScreen = new WinScreen(sketch);
         titleLabel = new Label(sketch, 'Iso Game', sketch.width/2 - this.playWidth/4, sketch.height*0.05, this.playWidth/2, this.playWidth*0.1);
         titleLabel.center = true;
         movesLabel        = new Label(sketch, 'MOVES   ' + moves, sketch.width/2 - buttWidth*1.7, height*0.12, this.playWidth*0.44, buttWidth*0.4);
@@ -127,6 +130,8 @@ let gameSketch = function(sketch) {
             helpScreen.draw();
         }else if(sketch.gameScreen === "menu") {
             menuScreen.draw();
+        }else if(sketch.gameScreen === 'win') {
+            winScreen.draw();
         }
 
     };
@@ -150,9 +155,12 @@ let gameSketch = function(sketch) {
         moves = 0;
         currentMove = 0;
         pastMoves = [];
+        this.winScreenClosed = false;
     };
 
     sketch.mouseReleased = function() {
+        console.log(pastMoves);
+        console.log(currentMove);
         if (this.gameScreen === "play") {
             if(won) {
 
@@ -227,14 +235,15 @@ let gameSketch = function(sketch) {
             }
             if(undoButton.clickedOn()) {
                 if (currentMove < pastMoves.length) {
-                    let id = pastMoves[pastMoves.length - 1 - currentMove][0];
+                    let pos = pastMoves.length - 1 - currentMove;
+                    let id = pastMoves[pos][0];
                     if (id === 0) {
-                        arraySwap(graph1.perm, pastMoves[pastMoves.length - 1 - currentMove][1], pastMoves[pastMoves.length - 1 - currentMove][2]);
+                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
                     }else if (id === 1) {
-                        arraySwap(graph2.perm, pastMoves[pastMoves.length - 1 - currentMove][1], pastMoves[pastMoves.length - 1 - currentMove][2]);
+                        arraySwap(graph2.perm, pastMoves[pos][1], pastMoves[pos][2]);
                     }else if (id === 2) {
-                        arraySwap(graph1.perm, pastMoves[pastMoves.length - 1 - currentMove][1], pastMoves[pastMoves.length - 1 - currentMove][2]);
-                        arraySwap(graph2.perm, pastMoves[pastMoves.length - 1 - currentMove][1], pastMoves[pastMoves.length - 1 - currentMove][2]);
+                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
+                        arraySwap(graph2.perm, pastMoves[pos][1], pastMoves[pos][2]);
                     }
                     moves -= 1;
                     currentMove += 1;
@@ -247,28 +256,26 @@ let gameSketch = function(sketch) {
             }
             if (redoButton.clickedOn()) {
                 if (currentMove > 0) {
-                    let id = pastMoves[pastMoves.length - 1 - currentMove][0];
+                    let pos = pastMoves.length - currentMove;
+                    let id = pastMoves[pos][0];
                     if (id === 0) {
-                        arraySwap(graph1.perm, pastMoves[pastMoves.length - 1 - currentMove][1], pastMoves[pastMoves.length - 1 - currentMove][2]);
+                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
                     }else if (id === 1) {
-                        arraySwap(graph1.perm, pastMoves[pastMoves.length - 1 - currentMove][1], pastMoves[pastMoves.length - 1 - currentMove][2]);
+                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
                     }else if (id === 2) {
-                        arraySwap(graph1.perm, pastMoves[pastMoves.length - 1 - currentMove][1], pastMoves[pastMoves.length - 1 - currentMove][2]);
-                        arraySwap(graph1.perm, pastMoves[pastMoves.length - 1 - currentMove][1], pastMoves[pastMoves.length - 1 - currentMove][2]);
+                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
+                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
                     }
                     currentMove -= 1;
                     moves += 1;
-                    if(won) {
-                        graph1.won = false;
-                        graph2.won = false;
-                        won = false;
-                    }
                 }
             }
         }else if(this.gameScreen === "menu") {
             menuScreen.mouseReleased();
         }else if(this.gameScreen === "help") {
             helpScreen.mouseReleased();
+        }else if(this.gameScreen === "win") {
+            winScreen.mouseReleased();
         }
         if(pastMoves.length > 0 && currentMove < pastMoves.length) {
             undoButton.color = '#3c3c';
@@ -289,6 +296,9 @@ let gameSketch = function(sketch) {
 
 
         if (isIso && this.gameScreen === "play") {
+            if (!this.winScreenClosed) {
+                this.gameScreen = "win";
+            }
             won = true;
             graph1.won = true;
             graph2.won = true;

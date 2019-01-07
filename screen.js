@@ -114,7 +114,7 @@ function HelpScreen(context) {
     titleLabel.center = true;
 
     let currentPage = 0;
-    let numPages = 2;
+    let numPages = 3;
 
 
 
@@ -134,10 +134,12 @@ function HelpScreen(context) {
             this.drawPage0();
         }else if (currentPage === 1) {
             this.drawPage1();
+        }else if (currentPage === 2) {
+            this.drawPage2();
         }
     };
 
-    this.drawPage1 = function() {
+    this.drawPage2 = function() {
         this.context.fill(this.textColor);
         this.context.textAlign(this.context.LEFT, this.context.CENTER);
         this.context.textSize(this.h/30);
@@ -145,11 +147,13 @@ function HelpScreen(context) {
         let upPos = cy - this.h*0.38;
 
         this.context.fill('#eeee');
+        this.context.stroke(2);
         this.context.rectMode(this.context.CENTER);
         this.context.rect(cx, upPos + 3.5*this.h/25 - 0.5*this.h/25, this.w*0.9, this.h/25*7.5, 5);
         this.context.rect(cx, upPos + 11.5*this.h/25 - 0.5*this.h/25, this.w*0.9, this.h/25*7.5, 5);
 
         this.context.fill('#444e');
+        this.context.noStroke();
         this.context.text('Offset Touch         ', leftPos, upPos);
         this.context.text('Changes whether the  ', leftPos, upPos +  2*this.h/25);
         this.context.text('selected vertex is   ', leftPos, upPos +  3*this.h/25);
@@ -166,6 +170,37 @@ function HelpScreen(context) {
 
     };
 
+    this.drawPage1 = function() {
+        this.context.fill(this.textColor);
+        this.context.textAlign(this.context.LEFT, this.context.CENTER);
+        this.context.textSize(this.h/30);
+        let leftPos = cx - this.w*0.4;
+        let upPos = cy - this.h*0.38;
+
+        this.context.fill('#eeee');
+        this.context.stroke(2);
+        this.context.rectMode(this.context.CENTER);
+        this.context.rect(cx, upPos + 3*this.h/25 - 0.5*this.h/25, this.w*0.9, this.h/25*6.5, 5);
+        this.context.rect(cx, upPos + 9*this.h/25 - 0.5*this.h/25, this.w*0.9, this.h/25*4.5, 5);
+
+        this.context.fill('#444e');
+        this.context.noStroke();
+        this.context.text('The level determines ', leftPos, upPos);
+        this.context.text('how many vertices    ', leftPos, upPos +  1*this.h/25);
+        this.context.text('your graph has. Every', leftPos, upPos +  2*this.h/25);
+        this.context.text('time you play a level', leftPos, upPos +  3*this.h/25);
+        this.context.text('the puzzle is        ', leftPos, upPos +  4*this.h/25);
+        this.context.text('randomized.          ', leftPos, upPos +  5*this.h/25);
+
+        this.context.text('When you win you are ', leftPos, upPos +  7*this.h/25);
+        this.context.text('sent to the selected ', leftPos, upPos +  8*this.h/25);
+        this.context.text('level and get a new  ', leftPos, upPos +  9*this.h/25);
+        this.context.text('puzzle of that level.', leftPos, upPos +  10*this.h/25);
+
+
+
+    };
+
     this.drawPage0 = function() {
         this.context.fill(this.textColor);
         this.context.textAlign(this.context.LEFT, this.context.CENTER);
@@ -175,12 +210,15 @@ function HelpScreen(context) {
 
         this.context.fill('#eeee');
         this.context.rectMode(this.context.CENTER);
+        this.context.stroke(2);
         this.context.rect(cx, upPos + 1.5*this.h/25 - 0.5*this.h/25, this.w*0.9, this.h/25*3.5, 5);
         this.context.rect(cx, upPos + 6*this.h/25 - 0.5*this.h/25, this.w*0.9, this.h/25*4.5, 5);
         this.context.rect(cx, upPos + 11.5*this.h/25 - 0.5*this.h/25, this.w*0.9, this.h/25*5.5, 5);
         this.context.rect(cx, upPos + 16.5*this.h/25 - 0.5*this.h/25, this.w*0.9, this.h/25*3.5, 5);
 
         this.context.fill('#444e');
+        this.context.noStroke();
+
         this.context.text('Swap vertices so that', leftPos, upPos);
         this.context.text('there is an edge over', leftPos, upPos +  1*this.h/25);
         this.context.text('every track.'         , leftPos, upPos +  2*this.h/25);
@@ -197,7 +235,7 @@ function HelpScreen(context) {
         this.context.text('with them.           ', leftPos, upPos +  13*this.h/25);
 
         this.context.text('RSET lets you try the', leftPos, upPos +  15*this.h/25);
-        this.context.text('same graph from the  ', leftPos, upPos +  16*this.h/25);
+        this.context.text('same puzzle from the ', leftPos, upPos +  16*this.h/25);
         this.context.text('beginning.           ', leftPos, upPos +  17*this.h/25);
 
 
@@ -283,5 +321,78 @@ function HelpScreen(context) {
         backButton.mouseReleased();
         forwardButton.mouseReleased();
 
+    };
+}
+
+function WinScreen(context) {
+    this.context = context;
+    this.w = context.playWidth*0.8;
+    this.h = context.height * 0.4;
+    this.backgroundColor = '#bdbe';
+    this.borderColor = '#444e';
+    this.textColor = '#444e';
+    let cx = context.width/2;
+    let cy = context.height/2;
+
+    let closeButtonWidth = this.w/10;
+    let closeButton = new CloseButton(this.context, cx + this.w / 2, cy - this.h / 2, closeButtonWidth);
+
+    let titleLabel = new Label(this.context, 'GOOD JOB!', cx - this.w*0.35, cy - this.h*0.3, this.w*0.7, this.w*0.15);
+    titleLabel.center = true;
+    let buttonWidth = this.w*0.6;
+    let buttonHeight = buttonWidth*0.15;
+    let lessButton = new Button(this.context, 'PREV LEVEL', buttonHeight, cx, cy - this.h*0.05, buttonWidth, buttonHeight);
+    lessButton.mouseReleased = function() {
+        if (this.clickedOn()) {
+            context.numVerts -= 1;
+            context.reset();
+        }
+    };
+    let sameButton = new Button(this.context, 'SAME LEVEL', buttonHeight, cx, cy + this.h*0.15, buttonWidth, buttonHeight);
+    sameButton.mouseReleased = function() {
+        if (this.clickedOn()) {
+            context.gameScreen = "play";
+            context.reset();
+        }
+    };
+    let moreButton = new Button(this.context, 'NEXT LEVEL', buttonHeight, cx, cy + this.h*0.35, buttonWidth, buttonHeight);
+    moreButton.mouseReleased = function() {
+        if (this.clickedOn()) {
+            context.numVerts += 1;
+            context.reset();
+        }
+    };
+
+
+
+
+    this.draw = function() {
+        this.context.rectMode(this.context.CENTER, this.context.CENTER);
+        this.context.fill(this.backgroundColor);
+        this.context.stroke(this.borderColor);
+        this.context.strokeWeight(2);
+        this.context.rect(cx, cy, this.w, this.h, 10);
+        closeButton.draw();
+        titleLabel.draw();
+        lessButton.draw();
+        sameButton.draw();
+        moreButton.draw();
+
+
+
+    };
+
+
+
+
+
+    this.mouseReleased = function() {
+        if (closeButton.clickedOn()) {
+            context.gameScreen = "play";
+            context.winScreenClosed = true;
+        }
+        lessButton.mouseReleased();
+        sameButton.mouseReleased();
+        moreButton.mouseReleased();
     };
 }

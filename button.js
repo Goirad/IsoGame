@@ -19,7 +19,7 @@ class Button {
 
         //button box
         this.context.stroke('#444e');
-        this.context.strokeWeight(2);
+        this.context.strokeWeight(3);
         this.context.fill(this.color);
         this.context.rect(0, 0, this.w, this.h, 10);
 
@@ -27,6 +27,7 @@ class Button {
         this.context.textSize(this.textSize);
         this.context.textAlign(this.context.CENTER, this.context.CENTER);
         this.context.fill('#444e');
+        this.context.noStroke();
         this.context.text(this.text, 0, this.textSize/15);
 
 
@@ -52,7 +53,7 @@ class CloseButton extends Button {
         //background
         this.context.translate(this.x, this.y);
         this.context.rectMode(this.context.CENTER);
-        this.context.strokeWeight(2);
+        this.context.strokeWeight(3);
         this.context.fill('#eeee');
         this.context.rect(0, 0, this.w, this.w, 10);
         //tick
@@ -86,8 +87,11 @@ class Label {
         this.context.rectMode(this.context.CORNERS);
         this.context.textSize(this.textSize);
         this.context.fill('#eeee');
+        this.context.strokeWeight(2);
+
         this.context.rect(0, -this.h/2, this.w, this.h/2, 5);
         this.context.fill('#444e');
+        this.context.noStroke();
 
         if (this.center) {
             this.context.textAlign(this.context.CENTER, this.context.CENTER);
@@ -115,7 +119,7 @@ class CheckBox {
         //background
         this.context.translate(this.x, this.y);
         this.context.rectMode(this.context.CENTER);
-        this.context.strokeWeight(2);
+        this.context.strokeWeight(3);
         this.context.fill('#eeee');
         this.context.rect(0, 0, this.w, this.w, 10);
         //tick
