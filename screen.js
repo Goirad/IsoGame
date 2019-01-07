@@ -332,12 +332,12 @@ function HelpScreen(context) {
 function WinScreen(context) {
     this.context = context;
     this.w = context.playWidth*0.8;
-    this.h = context.height * 0.4;
+    this.h = context.height * 0.3;
     this.backgroundColor = '#bdbe';
     this.borderColor = '#444e';
     this.textColor = '#444e';
     let cx = context.width/2;
-    let cy = context.height/2;
+    let cy = context.height/5;
 
     let closeButtonWidth = this.w/10;
     let closeButton = new CloseButton(this.context, cx + this.w / 2, cy - this.h / 2, closeButtonWidth);
