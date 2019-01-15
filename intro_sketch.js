@@ -9,10 +9,6 @@ let gameSketch = function (sketch) {
     let graphWidth;
     let won = false;
 
-    //menu
-    let menuCloseButton;
-
-
     //play
     let menuButton;
     let resetButton;
@@ -32,6 +28,8 @@ let gameSketch = function (sketch) {
     let movesLabel;
     let titleLabel;
 
+    let buttons = [];
+
     sketch.setup = function () {
         this.advancedMove = false; //whether to display advanced move checkboxes
         this.gameScreen = "play";
@@ -49,19 +47,88 @@ let gameSketch = function (sketch) {
             graphWidth = width * 0.9;
         }
 
-        graph1 = new Graph(this.numVerts, sketch.width / 2, sketch.height * 0.6, graphWidth);
+        graph1 = new Graph(sketch, this.numVerts, sketch.width / 2, sketch.height * 0.6, graphWidth);
         graph2 = new staticGraph(graph1);
         //graph2.y = sketch.height/4;
         let buttWidth = this.playWidth / 5;
 
         menuButton = new Button(sketch, 'MENU', buttWidth / 3, sketch.width / 2 + buttWidth * 1.2, height * 0.20, buttWidth, buttWidth * .4);
-        resetButton = new Button(sketch, 'RSET', buttWidth / 3, sketch.width / 2 + buttWidth * 1.2, height * 0.12, buttWidth, buttWidth * .4);
+        menuButton.mouseReleased = function() {
+            if(this.clickedOn()) {
+                sketch.gameScreen = "menu";
+            }
+        };
+        buttons.push(menuButton);
+        resetButton = new Button(sketch,'RSET', buttWidth / 3, sketch.width / 2 + buttWidth * 1.2, height * 0.12, buttWidth, buttWidth * .4);
+        resetButton.mouseReleased = function() {
+            if (this.clickedOn()) {
+                won = false;
+                graph1.perm = graph1.originalPerm.slice();
+                graph2.perm = graph2.originalPerm.slice();
+                moves = 0;
+                pastMoves = [];
+                currentMove = 0;
+                sketch.gameScreen = "play";
+                graph1.won = false;
+                graph2.won = false;
+            }
+        };
+        buttons.push(resetButton);
         undoButton = new Button(sketch, 'UNDO', buttWidth / 3, sketch.width / 2, height * 0.28, buttWidth, buttWidth * .4);
         undoButton.color = '#c33c';
+        undoButton.mouseReleased = function() {
+            if (this.clickedOn()) {
+                if (currentMove < pastMoves.length) {
+                    let pos = pastMoves.length - 1 - currentMove;
+                    let id = pastMoves[pos][0];
+                    if (id === 0) {
+                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
+                    } else if (id === 1) {
+                        arraySwap(graph2.perm, pastMoves[pos][1], pastMoves[pos][2]);
+                    } else if (id === 2) {
+                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
+                        arraySwap(graph2.perm, pastMoves[pos][1], pastMoves[pos][2]);
+                    }
+                    moves -= 1;
+                    currentMove += 1;
+                    if (won) {
+                        graph1.won = false;
+                        graph2.won = false;
+                        won = false;
+                    }
+                }
+            }
+        };
+        buttons.push(undoButton);
         redoButton = new Button(sketch, 'REDO', buttWidth / 3, sketch.width / 2 + buttWidth * 1.2, height * 0.28, buttWidth, buttWidth * .4);
         redoButton.color = '#c33c';
-        helpButton = new Button(sketch, 'HELP', buttWidth / 3, sketch.width / 2 - buttWidth * 1.2, height * 0.28, buttWidth, buttWidth * 0.4);
+        redoButton.mouseReleased = function() {
+            if (this.clickedOn()) {
+                if (currentMove > 0) {
+                    let pos = pastMoves.length - currentMove;
+                    let id = pastMoves[pos][0];
+                    if (id === 0) {
+                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
+                    } else if (id === 1) {
+                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
+                    } else if (id === 2) {
+                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
+                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
+                    }
+                    currentMove -= 1;
+                    moves += 1;
+                }
+            }
+        };
+        buttons.push(redoButton);
 
+        helpButton = new Button(sketch, 'HELP', buttWidth / 3, sketch.width / 2 - buttWidth * 1.2, height * 0.28, buttWidth, buttWidth * 0.4);
+        helpButton.mouseReleased = function() {
+          if(this.clickedOn()) {
+              sketch.gameScreen = "help";
+          }
+        };
+        buttons.push(helpButton);
         menuScreen = new MenuScreen(sketch, this.playWidth);
         helpScreen = new HelpScreen(sketch);
         winScreen = new WinScreen(sketch);
@@ -80,8 +147,7 @@ let gameSketch = function (sketch) {
         moveAnsCheckbox = new CheckBox(sketch, sketch.width / 2 + this.playWidth / 2 - this.playWidth / 10, height * 0.93, this.playWidth / 10);
         moveAnsCheckbox.checked = true;
 
-        sketch.textFont('Courier New')
-        sketch.frameRate(30);
+        sketch.textFont('Courier New');
         sketch.noLoop();
 
 
@@ -146,7 +212,7 @@ let gameSketch = function (sketch) {
     sketch.reset = function () {
         won = false;
         this.gameScreen = "play";
-        graph1 = new Graph(this.numVerts, sketch.width / 2, sketch.height * 0.6, graphWidth);
+        graph1 = new Graph(sketch, this.numVerts, sketch.width / 2, sketch.height * 0.6, graphWidth);
         graph2 = new staticGraph(graph1);
         moves = 0;
         currentMove = 0;
@@ -168,7 +234,7 @@ let gameSketch = function (sketch) {
                 let ansSwapped = null;
                 let goalSwapped = null;
                 if (moveAns) {
-                    if (v != null && v != graph1.selected && graph1.selected != null) {
+                    if (v != null && v !== graph1.selected && graph1.selected != null) {
                         arraySwap(graph1.perm, v, graph1.selected);
                         ansSwapped = graph1.selected;
                         if (currentMove > 0) {
@@ -179,7 +245,7 @@ let gameSketch = function (sketch) {
                     }
                 }
                 if (moveGoal) {
-                    if (v != null && v != graph2.selected && graph2.selected != null) {
+                    if (v != null && v !== graph2.selected && graph2.selected != null) {
                         arraySwap(graph2.perm, v, graph2.selected);
                         goalSwapped = graph2.selected;
                         if (currentMove > 0) {
@@ -210,59 +276,8 @@ let gameSketch = function (sketch) {
                 moveAnsCheckbox.clickedOn();
                 moveAns = moveAnsCheckbox.checked;
             }
-            if (menuButton.clickedOn()) {
-                this.gameScreen = "menu";
-            }
-            if (helpButton.clickedOn()) {
-                this.gameScreen = "help";
-            }
-            if (resetButton.clickedOn()) {
-                won = false;
-                graph1.perm = graph1.originalPerm.slice();
-                graph2.perm = graph2.originalPerm.slice();
-                moves = 0;
-                pastMoves = [];
-                currentMove = 0;
-                this.gameScreen = "play";
-                graph1.won = false;
-                graph2.won = false;
-            }
-            if (undoButton.clickedOn()) {
-                if (currentMove < pastMoves.length) {
-                    let pos = pastMoves.length - 1 - currentMove;
-                    let id = pastMoves[pos][0];
-                    if (id === 0) {
-                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
-                    } else if (id === 1) {
-                        arraySwap(graph2.perm, pastMoves[pos][1], pastMoves[pos][2]);
-                    } else if (id === 2) {
-                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
-                        arraySwap(graph2.perm, pastMoves[pos][1], pastMoves[pos][2]);
-                    }
-                    moves -= 1;
-                    currentMove += 1;
-                    if (won) {
-                        graph1.won = false;
-                        graph2.won = false;
-                        won = false;
-                    }
-                }
-            }
-            if (redoButton.clickedOn()) {
-                if (currentMove > 0) {
-                    let pos = pastMoves.length - currentMove;
-                    let id = pastMoves[pos][0];
-                    if (id === 0) {
-                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
-                    } else if (id === 1) {
-                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
-                    } else if (id === 2) {
-                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
-                        arraySwap(graph1.perm, pastMoves[pos][1], pastMoves[pos][2]);
-                    }
-                    currentMove -= 1;
-                    moves += 1;
-                }
+            for (let b of buttons) {
+                b.mouseReleased();
             }
         } else if (this.gameScreen === "menu") {
             menuScreen.mouseReleased();
@@ -271,6 +286,8 @@ let gameSketch = function (sketch) {
         } else if (this.gameScreen === "win") {
             winScreen.mouseReleased();
         }
+
+
         undoButton.color = (pastMoves.length > 0 && currentMove < pastMoves.length) ? '#3c3c' : '#c33c';
         redoButton.color = (currentMove === 0) ? '#c33c' : '#3c3c';
 
