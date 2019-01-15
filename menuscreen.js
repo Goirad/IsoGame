@@ -1,7 +1,7 @@
-function MenuScreen(context, playWidth) {
+function MenuScreen(context) {
     this.context = context;
-    this.z = 0;
-    this.w = playWidth * 0.8;
+    let gameState = context.gameState;
+    this.w = context.gameState.playWidth * 0.8;
     this.h = context.height * 0.9;
 
     this.backgroundColor = '#dbbe';
@@ -72,20 +72,19 @@ function MenuScreen(context, playWidth) {
         for (let row of this.lvlButtons) {
             for (let b of row) {
                 if (b.clickedOn()) {
-                    context.numVerts = parseInt(b.text);
-                    context.levelLabel.update();
-                    context.reset();
+                    gameState.numVerts = parseInt(b.text);
+                    context.playScreen.newLevel();
                 }
             }
         }
         if (this.menuCloseButton.clickedOn()) {
-            context.gameScreen = "play";
+            gameState.gameScreen = "play";
         }
 
         this.offsetTouchCheckbox.clickedOn();
-        context.offsetTouch = this.offsetTouchCheckbox.checked;
+        gameState.offsetTouch = this.offsetTouchCheckbox.checked;
 
         this.advancedMoveCheckbox.clickedOn();
-        context.advancedMove = this.advancedMoveCheckbox.checked;
+        gameState.advancedMove = this.advancedMoveCheckbox.checked;
     };
 }

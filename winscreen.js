@@ -1,6 +1,7 @@
 function WinScreen(context) {
     this.context = context;
-    this.w = context.playWidth * 0.8;
+    let gameState = context.gameState;
+    this.w = gameState.playWidth * 0.8;
     this.h = context.height * 0.3;
     this.backgroundColor = '#bdbe';
     this.borderColor = '#444e';
@@ -17,25 +18,22 @@ function WinScreen(context) {
     let lessButton = new Button(this.context, 'PREV LEVEL', buttonHeight, cx, cy - this.h * 0.05, buttonWidth, buttonHeight);
     lessButton.mouseReleased = function () {
         if (this.clickedOn()) {
-            context.numVerts -= 1;
-            context.levelLabel.update();
-            context.reset();
+            gameState.numVerts -= 1;
+            context.playScreen.newLevel();
         }
     };
     let sameButton = new Button(this.context, 'SAME LEVEL', buttonHeight, cx, cy + this.h * 0.15, buttonWidth, buttonHeight);
     sameButton.mouseReleased = function () {
         if (this.clickedOn()) {
-            context.gameScreen = "play";
-            context.levelLabel.update();
-            context.reset();
+            gameState.gameScreen = "play";
+            context.playScreen.newLevel();
         }
     };
     let moreButton = new Button(this.context, 'NEXT LEVEL', buttonHeight, cx, cy + this.h * 0.35, buttonWidth, buttonHeight);
     moreButton.mouseReleased = function () {
         if (this.clickedOn()) {
-            context.numVerts += 1;
-            context.levelLabel.update();
-            context.reset();
+            gameState.numVerts += 1;
+            context.playScreen.newLevel();
         }
     };
 
@@ -55,8 +53,8 @@ function WinScreen(context) {
 
     this.mouseReleased = function () {
         if (closeButton.clickedOn()) {
-            context.gameScreen = "play";
-            context.winScreenClosed = true;
+            gameState.gameScreen = "play";
+            gameState.winScreenClosed = true;
         }
         lessButton.mouseReleased();
         sameButton.mouseReleased();

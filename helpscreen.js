@@ -1,6 +1,6 @@
 function HelpScreen(context) {
     this.context = context;
-    this.w = context.playWidth * 0.8;
+    this.w = context.gameState.playWidth * 0.8;
     this.h = context.height * 0.9;
     this.backgroundColor = '#bdde';
     this.borderColor = '#444e';
@@ -199,7 +199,7 @@ function HelpScreen(context) {
 
     this.mouseReleased = function () {
         if (closeButton.clickedOn()) {
-            context.gameScreen = "play";
+            context.gameState.gameScreen = "play";
         }
         backButton.mouseReleased();
         forwardButton.mouseReleased();

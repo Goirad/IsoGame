@@ -76,7 +76,7 @@ class Graph {
                     this.radius * Math.sin(2 * i * Math.PI / this.numVerts)
                 ]);
             } else {
-                if (this.context.offsetTouch) {
+                if (this.context.gameState.offsetTouch) {
                     vertices.push([this.context.mouseX - this.x, this.context.mouseY - this.y - this.context.height * 0.1]);
                 } else {
                     vertices.push([this.context.mouseX - this.x, this.context.mouseY - this.y]);
@@ -143,7 +143,7 @@ class staticGraph extends Graph {
                     this.radius * Math.sin(2 * i * Math.PI / this.numVerts)
                 ]);
             } else {
-                if (this.context.offsetTouch) {
+                if (this.context.gameState.offsetTouch) {
                     vertices.push([this.context.mouseX - this.x, this.context.mouseY - this.y - this.context.height * 0.1]);
                 } else {
                     vertices.push([this.context.mouseX - this.x, this.context.mouseY - this.y]);
